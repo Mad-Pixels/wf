@@ -24,6 +24,7 @@ func (u *ui) Run() error {
 	return u.app.SetRoot(u.pages, true).Run()
 }
 
+// TODO: struct to bindig and manage it from chan
 func (u *ui) ShowModal(text string, buttons []string, f func(btnID int)) {
 	modal := tview.NewModal().
 		SetText(text).
