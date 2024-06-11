@@ -7,12 +7,14 @@ import (
 	"github.com/rivo/tview"
 )
 
+// external network object data implementation.
 type network interface {
 	GetSsid() string
 	GetFreq() string
 	GetLevel() string
 }
 
+// external frame object with modal window.
 type modal interface {
 	ShowModal(text string, buttons []string, doneFunc func(buttonIndex int))
 }
@@ -22,7 +24,15 @@ func NetScan(f modal) ComponentInterface {
 		self := &netScan{
 			table: tview.NewTable().SetSelectable(true, false),
 			action: func(n network) {
-				f.ShowModal("text", []string{"test"}, func(buttonIndex int) {})
+				f.ShowModal(
+					n.GetSsid(),
+					[]string{
+						"connect",
+						"cancel",
+					},
+					func(buttonIndex int) {
+
+					})
 			},
 		}
 		self.table.SetSelectedFunc(func(r, _ int) {

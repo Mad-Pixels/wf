@@ -25,8 +25,4 @@ func Run() {
 	if err := f.Run(); err != nil {
 		panic(err)
 	}
-	//pageScan(ctx)
-
-	//frame.MM(ctx)
-
 }

@@ -35,7 +35,6 @@ func (f *Frame) ShowModal(text string, buttons []string, doneFunc func(buttonInd
 			doneFunc(buttonIndex)
 			f.App.SetRoot(f.Root, true).SetFocus(f.Root)
 		})
-
 	f.App.SetRoot(modal, true).SetFocus(modal)
 }
 
