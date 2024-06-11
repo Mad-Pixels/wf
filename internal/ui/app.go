@@ -38,8 +38,14 @@ func (u *ui) ShowModal(text string, buttons []string, f func(btnID int)) {
 	u.app.SetFocus(modal)
 }
 
+func (u *ui) Draw() {
+	u.app.Draw()
+}
+
 func Run() {
 	ctx := context.Background()
+
+	cch := make(chan struct{}, 1)
 
 	ui := NewUI()
 	page := frame.NewPage()
@@ -47,7 +53,16 @@ func Run() {
 	sysInfo := component.SysInfo().FlexItem(ctx)
 	netStat := component.NetStat().FlexItem(ctx)
 
-	netScan := component.NetScan(ui)
+	netScan := component.NetScan(ui, cch)
+
+	go func() {
+		for {
+			select {
+			case <-cch:
+				ui.Draw()
+			}
+		}
+	}()
 
 	page.SetHeader([]*tview.Flex{sysInfo, netStat})
 	page.SetContent(netScan.FlexItem(ctx))

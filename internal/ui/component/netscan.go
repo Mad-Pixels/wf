@@ -19,7 +19,7 @@ type modal interface {
 	ShowModal(text string, buttons []string, doneFunc func(buttonIndex int))
 }
 
-func NetScan(f modal) ComponentInterface {
+func NetScan(f modal, ch chan struct{}) ComponentInterface {
 	return new("netScan", func() ComponentInterface {
 		self := &netScan{
 			table: tview.NewTable().SetSelectable(true, false),
@@ -34,6 +34,7 @@ func NetScan(f modal) ComponentInterface {
 
 					})
 			},
+			ch: ch,
 		}
 		self.table.SetSelectedFunc(func(r, _ int) {
 			self.action(self.networks[r-1])
@@ -48,6 +49,8 @@ type netScan struct {
 	table    *tview.Table
 	action   func(n network)
 	networks []network
+
+	ch chan struct{}
 }
 
 func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
@@ -83,4 +86,5 @@ func (n *netScan) reload(ctx context.Context) {
 	}
 	n.networks = networks
 	n.draw()
+	n.ch <- struct{}{}
 }
