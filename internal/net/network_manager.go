@@ -1,6 +1,10 @@
 package net
 
-import "context"
+import (
+	"context"
+	"math/rand"
+	"time"
+)
 
 type NetworkManager struct{}
 
@@ -9,19 +13,31 @@ func NewNetworkManager() Driver {
 }
 
 func (n NetworkManager) Scan(ctx context.Context) ([]network, error) {
-	f := []network{
-		{
-			ssid:    "ssid1",
-			freq:    "freq1",
-			level:   "level1",
-			quality: "quality1",
-		},
-		{
-			ssid:    "ssid2",
-			freq:    "freq2",
-			level:   "level2",
-			quality: "quality2",
-		},
+	rand.Seed(time.Now().UnixNano())
+	numNetworks := rand.Intn(10) + 1
+
+	networks := make([]network, numNetworks)
+	for i := 0; i < numNetworks; i++ {
+		networks[i] = randomNetwork()
 	}
-	return f, nil
+	return networks, nil
+
+}
+
+func randomString(n int) string {
+	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
+func randomNetwork() network {
+	return network{
+		ssid:    randomString(5),
+		freq:    randomString(4),
+		level:   randomString(6),
+		quality: randomString(8),
+	}
 }
