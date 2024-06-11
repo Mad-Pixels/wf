@@ -13,11 +13,17 @@ type network interface {
 	GetLevel() string
 }
 
-func NetScan() ComponentInterface {
+type modal interface {
+	ShowModal(text string, buttons []string, doneFunc func(buttonIndex int))
+}
+
+func NetScan(f modal) ComponentInterface {
 	return new("netScan", func() ComponentInterface {
 		self := &netScan{
-			table:  tview.NewTable().SetSelectable(true, false),
-			action: func(n network) {},
+			table: tview.NewTable().SetSelectable(true, false),
+			action: func(n network) {
+				f.ShowModal("text", []string{"test"}, func(buttonIndex int) {})
+			},
 		}
 		self.table.SetSelectedFunc(func(r, _ int) {
 			self.action(self.networks[r-1])

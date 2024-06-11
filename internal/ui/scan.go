@@ -1,25 +1,17 @@
 package ui
 
-import (
-	"context"
+// func pageScan(ctx context.Context) {
+// 	pCtx, cancel := context.WithCancel(ctx)
+// 	defer cancel()
 
-	"github.com/Mad-Pixels/wf/internal/ui/component"
-	"github.com/Mad-Pixels/wf/internal/ui/frame"
-	"github.com/rivo/tview"
-)
+// 	view := frame.Builder(frame.Config{
+// 		Header: []*tview.Flex{
+// 			component.SysInfo().FlexItem(pCtx),
+// 			component.NetStat().FlexItem(pCtx),
+// 		},
+// 		Content: component.NetScan().FlexItem(pCtx),
+// 	})
 
-func pageScan(ctx context.Context) {
-	pCtx, cancel := context.WithCancel(ctx)
-	defer cancel()
+// 	App.SetRoot(view, true).SetFocus(view).Run()
 
-	view := frame.Builder(frame.Config{
-		Header: []*tview.Flex{
-			component.SysInfo().FlexItem(pCtx),
-			component.NetStat().FlexItem(pCtx),
-		},
-		Content: component.NetScan().FlexItem(pCtx),
-	})
-
-	App.SetRoot(view, true).SetFocus(view).Run()
-
-}
+// }
