@@ -5,13 +5,16 @@ import (
 )
 
 type Frame struct {
-	App  *tview.Application
-	Root *tview.Flex
+	App   *tview.Application
+	Root  *tview.Flex
+	Pages *tview.Pages
 }
 
 func NewFrame() *Frame {
+	pages := tview.NewPages()
 	return &Frame{
-		App: tview.NewApplication(),
+		App:   tview.NewApplication(),
+		Pages: pages,
 	}
 }
 
@@ -25,6 +28,7 @@ func (f *Frame) SetHeader(header []*tview.Flex) {
 
 func (f *Frame) SetContent(content *tview.Flex) {
 	f.Root.AddItem(content, 0, 5, true)
+	f.Pages.AddPage("main", f.Root, true, true)
 }
 
 func (f *Frame) ShowModal(text string, buttons []string, doneFunc func(buttonIndex int)) {
@@ -33,11 +37,14 @@ func (f *Frame) ShowModal(text string, buttons []string, doneFunc func(buttonInd
 		AddButtons(buttons).
 		SetDoneFunc(func(buttonIndex int, l string) {
 			doneFunc(buttonIndex)
-			f.App.SetRoot(f.Root, true).SetFocus(f.Root)
+			f.Pages.HidePage("modal")
 		})
-	f.App.SetRoot(modal, true).SetFocus(modal)
+	f.Pages.AddPage("modal", modal, true, true).ShowPage("modal")
+	f.App.SetRoot(f.Pages, true).SetFocus(modal)
 }
 
 func (f *Frame) Run() error {
+	f.App.SetRoot(f.Pages, true).SetFocus(f.Root)
+
 	return f.App.SetRoot(f.Root, true).Run()
 }
