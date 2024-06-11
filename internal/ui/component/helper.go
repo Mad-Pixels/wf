@@ -3,12 +3,16 @@ package component
 import (
 	"context"
 
-	"github.com/Mad-Pixels/wf/internal/ui"
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
-func Helper(hotKeys *[]ui.HotKeys) ComponentInterface {
+type keyBinding interface {
+	Description() string
+	Shortcut() tcell.Key
+}
+
+func Helper(hotKeys *[]keyBinding) ComponentInterface {
 	return new("helper", func() ComponentInterface {
 		self := &helper{
 			table:   tview.NewTable(),
@@ -22,7 +26,7 @@ func Helper(hotKeys *[]ui.HotKeys) ComponentInterface {
 
 type helper struct {
 	table   *tview.Table
-	hotKeys *[]ui.HotKeys
+	hotKeys *[]keyBinding
 }
 
 func (h *helper) FlexItem(ctx context.Context) *tview.Flex {
@@ -41,8 +45,8 @@ func (h *helper) draw() {
 		return
 	}
 	for row, key := range *h.hotKeys {
-		h.table.SetCell(row, 0, tview.NewTableCell(tcell.KeyNames[key.Key]))
-		h.table.SetCell(row, 1, tview.NewTableCell(key.Description))
+		h.table.SetCell(row, 0, tview.NewTableCell(tcell.KeyNames[key.Shortcut()]))
+		h.table.SetCell(row, 1, tview.NewTableCell(key.Description()))
 	}
 }
 
