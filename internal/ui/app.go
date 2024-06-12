@@ -56,7 +56,7 @@ func Run() {
 	sync := binding.NewSynk(cch, mch)
 
 	sysInfo := component.SysInfo(sync).FlexItem(ctx)
-	netStat := component.NetStat(*sync).FlexItem(ctx)
+	netStat := component.NetStat(sync).FlexItem(ctx)
 
 	netScan := component.NetScan(sync)
 
@@ -73,6 +73,7 @@ func Run() {
 
 	page.SetHeader([]*tview.Flex{sysInfo, netStat})
 	page.SetContent(netScan.FlexItem(ctx))
+	//page.SetContent(sysInfo)
 
 	ui.pages.AddPage("main", page.Flex, true, true)
 

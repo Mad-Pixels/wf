@@ -7,10 +7,10 @@ import (
 	"github.com/rivo/tview"
 )
 
-func NetStat(synk binding.Synk) ComponentInterface {
+func NetStat(synk *binding.Synk) ComponentInterface {
 	return new("netStat", func() ComponentInterface {
 		self := &netStat{
-			Synk: &synk,
+			Synk: synk,
 			text: tview.NewTextView(),
 		}
 		self.reload(context.Background())

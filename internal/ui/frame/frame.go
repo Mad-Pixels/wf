@@ -17,7 +17,7 @@ func NewPage() *Page {
 func (p *Page) SetHeader(header []*tview.Flex) {
 	headerFlex := tview.NewFlex().SetDirection(tview.FlexColumn)
 	for col, item := range header {
-		headerFlex.AddItem(item, 0, col, false)
+		headerFlex.AddItem(item, 0, col+1, false)
 	}
 	p.Flex.AddItem(headerFlex, 5, 1, false)
 }

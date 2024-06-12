@@ -41,7 +41,7 @@ func (s *sysInfo) draw() {
 	s.table.SetCell(0, 0, tview.NewTableCell("User:"))
 	s.table.SetCell(0, 1, tview.NewTableCell(s.usr))
 	s.table.SetCell(1, 0, tview.NewTableCell("UID:"))
-	s.table.SetCell(0, 1, tview.NewTableCell(s.uid))
+	s.table.SetCell(1, 1, tview.NewTableCell(s.uid))
 }
 
 func (s *sysInfo) reload(ctx context.Context) {
