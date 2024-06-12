@@ -2,10 +2,12 @@ package ui
 
 import (
 	"context"
+	"os"
 
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
 	"github.com/Mad-Pixels/wf/internal/ui/component"
 	"github.com/Mad-Pixels/wf/internal/ui/frame"
+	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
@@ -55,10 +57,26 @@ func Run() {
 
 	sync := binding.NewSynk(cch, mch)
 
+	keys := []binding.Keys{
+		{
+			Description: "exit",
+			Shortcut:    tcell.KeyCtrlC,
+			Action: func(ctx context.Context) {
+				ui.app.Stop()
+				os.Exit(0)
+			},
+		},
+	}
+
 	sysInfo := component.SysInfo(sync).FlexItem(ctx)
 	netStat := component.NetStat(sync).FlexItem(ctx)
+	helper := component.Helper(&keys, sync).FlexItem(ctx)
 
 	netScan := component.NetScan(sync)
+	info := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(sysInfo, 0, 2, false).
+		AddItem(netStat, 2, 1, false)
 
 	go func() {
 		for {
@@ -71,9 +89,8 @@ func Run() {
 		}
 	}()
 
-	page.SetHeader([]*tview.Flex{sysInfo, netStat})
+	page.SetHeader([]*tview.Flex{info, helper})
 	page.SetContent(netScan.FlexItem(ctx))
-	//page.SetContent(sysInfo)
 
 	ui.pages.AddPage("main", page.Flex, true, true)
 

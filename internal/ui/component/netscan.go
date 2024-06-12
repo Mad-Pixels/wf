@@ -54,9 +54,9 @@ func (n *netScan) delay() int8 {
 
 func (n *netScan) draw() {
 	n.table.Clear()
-	n.table.SetCell(0, 0, tview.NewTableCell("ssid").SetSelectable(false))
-	n.table.SetCell(0, 1, tview.NewTableCell("freq").SetSelectable(false))
-	n.table.SetCell(0, 2, tview.NewTableCell("level").SetSelectable(false))
+	n.table.SetCell(0, 0, tview.NewTableCell("ssid").SetSelectable(false).SetExpansion(1))
+	n.table.SetCell(0, 1, tview.NewTableCell("freq").SetSelectable(false).SetExpansion(1))
+	n.table.SetCell(0, 2, tview.NewTableCell("level").SetSelectable(false).SetExpansion(1))
 
 	for row, network := range n.networks {
 		n.table.SetCell(row+1, 0, tview.NewTableCell(network.GetSsid()))

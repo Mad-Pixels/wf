@@ -8,12 +8,7 @@ import (
 	"github.com/rivo/tview"
 )
 
-type keyBinding interface {
-	Description() string
-	Shortcut() tcell.Key
-}
-
-func Helper(hotKeys *[]keyBinding, synk *binding.Synk) ComponentInterface {
+func Helper(hotKeys *[]binding.Keys, synk *binding.Synk) ComponentInterface {
 	return new("helper", func() ComponentInterface {
 		self := &helper{
 			Synk:    synk,
@@ -28,7 +23,7 @@ func Helper(hotKeys *[]keyBinding, synk *binding.Synk) ComponentInterface {
 
 type helper struct {
 	table   *tview.Table
-	hotKeys *[]keyBinding
+	hotKeys *[]binding.Keys
 	*binding.Synk
 }
 
@@ -48,8 +43,8 @@ func (h *helper) draw() {
 		return
 	}
 	for row, key := range *h.hotKeys {
-		h.table.SetCell(row, 0, tview.NewTableCell(tcell.KeyNames[key.Shortcut()]))
-		h.table.SetCell(row, 1, tview.NewTableCell(key.Description()))
+		h.table.SetCell(row, 0, tview.NewTableCell(tcell.KeyNames[key.Shortcut]))
+		h.table.SetCell(row, 1, tview.NewTableCell(key.Description))
 	}
 }
 
