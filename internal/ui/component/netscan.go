@@ -74,6 +74,7 @@ func (n *netScan) reload(ctx context.Context) {
 	}
 	n.networks = networks
 	n.draw()
+	n.PutLog("netscan")
 }
 
 func (n *netScan) triggerAppDraw() {

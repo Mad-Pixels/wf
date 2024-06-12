@@ -4,6 +4,7 @@ import (
 	"context"
 	"os/user"
 
+	"github.com/Mad-Pixels/wf"
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
 	"github.com/rivo/tview"
 )
@@ -38,10 +39,12 @@ func (s *sysInfo) delay() int8 {
 }
 
 func (s *sysInfo) draw() {
-	s.table.SetCell(0, 0, tview.NewTableCell("User:"))
-	s.table.SetCell(0, 1, tview.NewTableCell(s.usr))
-	s.table.SetCell(1, 0, tview.NewTableCell("UID:"))
-	s.table.SetCell(1, 1, tview.NewTableCell(s.uid))
+	s.table.SetCell(0, 0, tview.NewTableCell("Version:"))
+	s.table.SetCell(0, 1, tview.NewTableCell(wf.Version))
+	s.table.SetCell(1, 0, tview.NewTableCell("User:"))
+	s.table.SetCell(1, 1, tview.NewTableCell(s.usr))
+	s.table.SetCell(2, 0, tview.NewTableCell("UID:"))
+	s.table.SetCell(2, 1, tview.NewTableCell(s.uid))
 }
 
 func (s *sysInfo) reload(ctx context.Context) {
@@ -55,6 +58,7 @@ func (s *sysInfo) reload(ctx context.Context) {
 	}
 	s.uid = uid
 	s.usr = usr
+	s.PutLog(usr)
 	s.draw()
 }
 

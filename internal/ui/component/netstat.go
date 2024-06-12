@@ -46,6 +46,7 @@ func (n *netStat) draw() {
 func (n *netStat) reload(ctx context.Context) {
 	n.status = fmt.Sprintf("%v", time.Now().Unix())
 	n.draw()
+	n.PutLog(n.status)
 }
 
 func (n *netStat) triggerAppDraw() {

@@ -51,11 +51,12 @@ func Run() {
 
 	cch := make(chan struct{}, 1)
 	mch := make(chan string, 1)
+	ich := make(chan string, 10)
 
 	ui := NewUI()
 	page := frame.NewPage()
 
-	sync := binding.NewSynk(cch, mch)
+	sync := binding.NewSynk(cch, mch, ich)
 
 	keys := []binding.Keys{
 		{
@@ -71,6 +72,7 @@ func Run() {
 	sysInfo := component.SysInfo(sync).FlexItem(ctx)
 	netStat := component.NetStat(sync).FlexItem(ctx)
 	helper := component.Helper(&keys, sync).FlexItem(ctx)
+	std := component.StdOut(sync).FlexItem(ctx)
 
 	netScan := component.NetScan(sync)
 	info := tview.NewFlex().
@@ -91,8 +93,21 @@ func Run() {
 
 	page.SetHeader([]*tview.Flex{info, helper})
 	page.SetContent(netScan.FlexItem(ctx))
+	page.SetFooter(std)
 
 	ui.pages.AddPage("main", page.Flex, true, true)
+
+	ui.app.SetInputCapture(
+		func(event *tcell.EventKey) *tcell.EventKey {
+			for _, k := range keys {
+				if k.Shortcut == event.Key() {
+					k.Action(ctx)
+					break
+				}
+			}
+			return event
+		},
+	)
 
 	if err := ui.Run(); err != nil {
 		panic(err)

@@ -25,3 +25,7 @@ func (p *Page) SetHeader(header []*tview.Flex) {
 func (p *Page) SetContent(content *tview.Flex) {
 	p.Flex.AddItem(content, 0, 5, true)
 }
+
+func (p *Page) SetFooter(footer *tview.Flex) {
+	p.Flex.AddItem(footer, 4, 1, false)
+}
