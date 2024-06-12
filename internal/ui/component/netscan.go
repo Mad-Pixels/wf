@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Mad-Pixels/wf/internal/net"
+	"github.com/Mad-Pixels/wf/internal/ui/binding"
 	"github.com/rivo/tview"
 )
 
@@ -19,9 +20,10 @@ type modal interface {
 	ShowModal(text string, buttons []string, doneFunc func(buttonIndex int))
 }
 
-func NetScan(f modal, ch chan struct{}) ComponentInterface {
+func NetScan(f modal, synk *binding.Synk) ComponentInterface {
 	return new("netScan", func() ComponentInterface {
 		self := &netScan{
+			Synk:  synk,
 			table: tview.NewTable().SetSelectable(true, false),
 			action: func(n network) {
 				f.ShowModal(
@@ -34,7 +36,6 @@ func NetScan(f modal, ch chan struct{}) ComponentInterface {
 
 					})
 			},
-			ch: ch,
 		}
 		self.table.SetSelectedFunc(func(r, _ int) {
 			self.action(self.networks[r-1])
@@ -49,8 +50,7 @@ type netScan struct {
 	table    *tview.Table
 	action   func(n network)
 	networks []network
-
-	ch chan struct{}
+	*binding.Synk
 }
 
 func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
@@ -86,5 +86,8 @@ func (n *netScan) reload(ctx context.Context) {
 	}
 	n.networks = networks
 	n.draw()
-	n.ch <- struct{}{}
+}
+
+func (n *netScan) triggerAppDraw() {
+	n.TriggerAppDraw()
 }

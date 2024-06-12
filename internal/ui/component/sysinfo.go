@@ -4,11 +4,13 @@ import (
 	"context"
 	"os/user"
 
+	"github.com/Mad-Pixels/wf/internal/ui/binding"
 	"github.com/rivo/tview"
 )
 
-func SysInfo() ComponentInterface {
+func SysInfo(synk *binding.Synk) ComponentInterface {
 	self := &sysInfo{
+		Synk:  synk,
 		table: tview.NewTable(),
 	}
 	self.reload(context.Background())
@@ -20,6 +22,7 @@ type sysInfo struct {
 	usr   string
 	uid   string
 	table *tview.Table
+	*binding.Synk
 }
 
 func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {
@@ -53,4 +56,8 @@ func (s *sysInfo) reload(ctx context.Context) {
 	s.uid = uid
 	s.usr = usr
 	s.draw()
+}
+
+func (n *sysInfo) triggerAppDraw() {
+	n.TriggerAppDraw()
 }

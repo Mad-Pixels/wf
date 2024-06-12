@@ -11,7 +11,9 @@ import (
 // ComponentInterface defines the interface for UI components.
 type ComponentInterface interface {
 	FlexItem(context.Context) *tview.Flex
+
 	reload(context.Context)
+	triggerAppDraw()
 	delay() int8
 	draw()
 }
@@ -51,6 +53,7 @@ func schedule[T ComponentInterface](ctx context.Context, t T) {
 		select {
 		case <-ticker.C:
 			t.reload(ctx)
+			t.triggerAppDraw()
 		case <-ctx.Done():
 			return
 		}

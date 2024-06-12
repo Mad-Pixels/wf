@@ -3,6 +3,7 @@ package ui
 import (
 	"context"
 
+	"github.com/Mad-Pixels/wf/internal/ui/binding"
 	"github.com/Mad-Pixels/wf/internal/ui/component"
 	"github.com/Mad-Pixels/wf/internal/ui/frame"
 	"github.com/rivo/tview"
@@ -51,10 +52,12 @@ func Run() {
 	ui := NewUI()
 	page := frame.NewPage()
 
-	sysInfo := component.SysInfo().FlexItem(ctx)
-	netStat := component.NetStat().FlexItem(ctx)
+	sync := binding.NewSynk(cch)
 
-	netScan := component.NetScan(ui, cch)
+	sysInfo := component.SysInfo(sync).FlexItem(ctx)
+	netStat := component.NetStat(*sync).FlexItem(ctx)
+
+	netScan := component.NetScan(ui, sync)
 
 	go func() {
 		for {

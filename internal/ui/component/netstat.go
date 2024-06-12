@@ -3,12 +3,14 @@ package component
 import (
 	"context"
 
+	"github.com/Mad-Pixels/wf/internal/ui/binding"
 	"github.com/rivo/tview"
 )
 
-func NetStat() ComponentInterface {
+func NetStat(synk binding.Synk) ComponentInterface {
 	return new("netStat", func() ComponentInterface {
 		self := &netStat{
+			Synk: &synk,
 			text: tview.NewTextView(),
 		}
 		self.reload(context.Background())
@@ -20,6 +22,7 @@ func NetStat() ComponentInterface {
 type netStat struct {
 	text   *tview.TextView
 	status string
+	*binding.Synk
 }
 
 func (n *netStat) FlexItem(ctx context.Context) *tview.Flex {
@@ -41,4 +44,8 @@ func (n *netStat) draw() {
 func (n *netStat) reload(ctx context.Context) {
 	n.status = "test"
 	n.draw()
+}
+
+func (n *netStat) triggerAppDraw() {
+	n.TriggerAppDraw()
 }
