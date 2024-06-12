@@ -15,26 +15,13 @@ type network interface {
 	GetLevel() string
 }
 
-// external frame object with modal window.
-type modal interface {
-	ShowModal(text string, buttons []string, doneFunc func(buttonIndex int))
-}
-
-func NetScan(f modal, synk *binding.Synk) ComponentInterface {
+func NetScan(synk *binding.Synk) ComponentInterface {
 	return new("netScan", func() ComponentInterface {
 		self := &netScan{
 			Synk:  synk,
 			table: tview.NewTable().SetSelectable(true, false),
 			action: func(n network) {
-				f.ShowModal(
-					n.GetSsid(),
-					[]string{
-						"connect",
-						"cancel",
-					},
-					func(buttonIndex int) {
-
-					})
+				synk.TriggerModal(n.GetSsid())
 			},
 		}
 		self.table.SetSelectedFunc(func(r, _ int) {

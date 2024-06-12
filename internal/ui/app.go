@@ -48,22 +48,25 @@ func Run() {
 	ctx := context.Background()
 
 	cch := make(chan struct{}, 1)
+	mch := make(chan string, 1)
 
 	ui := NewUI()
 	page := frame.NewPage()
 
-	sync := binding.NewSynk(cch)
+	sync := binding.NewSynk(cch, mch)
 
 	sysInfo := component.SysInfo(sync).FlexItem(ctx)
 	netStat := component.NetStat(*sync).FlexItem(ctx)
 
-	netScan := component.NetScan(ui, sync)
+	netScan := component.NetScan(sync)
 
 	go func() {
 		for {
 			select {
 			case <-cch:
 				ui.Draw()
+			case val := <-mch:
+				ui.ShowModal(val, []string{"cancel"}, func(btnID int) {})
 			}
 		}
 	}()
