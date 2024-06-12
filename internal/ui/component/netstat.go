@@ -2,6 +2,8 @@ package component
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
 	"github.com/rivo/tview"
@@ -42,7 +44,7 @@ func (n *netStat) draw() {
 }
 
 func (n *netStat) reload(ctx context.Context) {
-	n.status = "test"
+	n.status = fmt.Sprintf("%v", time.Now().Unix())
 	n.draw()
 }
 
