@@ -3,8 +3,8 @@ package component
 import (
 	"context"
 	"fmt"
-	"time"
 
+	"github.com/Mad-Pixels/wf/internal/net"
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
 	"github.com/rivo/tview"
 )
@@ -40,13 +40,23 @@ func (n *netStat) delay() int8 {
 }
 
 func (n *netStat) draw() {
-	n.text.SetText(n.status)
+	n.text.SetText(fmt.Sprintf("\n%s\n", n.status))
 }
 
 func (n *netStat) reload(ctx context.Context) {
-	n.status = fmt.Sprintf("%v", time.Now().Unix())
-	n.draw()
-	n.PutLog(n.status)
+	defer n.draw()
+
+	var status = "n/a"
+	info, err := net.NewNetworkManager().Stat(ctx)
+	switch {
+	case err != nil:
+		n.PutLog(err.Error())
+	case info == nil:
+		status = "no active connection"
+	default:
+		status = fmt.Sprintf("connected: %s", info.GetSsid())
+	}
+	n.status = status
 }
 
 func (n *netStat) triggerAppDraw() {

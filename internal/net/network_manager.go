@@ -24,6 +24,11 @@ func (n NetworkManager) Scan(ctx context.Context) ([]network, error) {
 
 }
 
+func (n NetworkManager) Stat(ctx context.Context) (*network, error) {
+	nn := randomNetwork()
+	return &nn, nil
+}
+
 func randomString(n int) string {
 	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	b := make([]byte, n)

@@ -2,8 +2,10 @@ package component
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
+	"github.com/Mad-Pixels/wf/internal/ui/styles"
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
@@ -12,7 +14,7 @@ func Helper(hotKeys *[]binding.Keys, synk *binding.Synk) ComponentInterface {
 	return new("helper", func() ComponentInterface {
 		self := &helper{
 			Synk:    synk,
-			table:   tview.NewTable(),
+			table:   styles.BaseTable(),
 			hotKeys: hotKeys,
 		}
 		self.reload(context.Background())
@@ -43,8 +45,8 @@ func (h *helper) draw() {
 		return
 	}
 	for row, key := range *h.hotKeys {
-		h.table.SetCell(row, 0, tview.NewTableCell(tcell.KeyNames[key.Shortcut]))
-		h.table.SetCell(row, 1, tview.NewTableCell(key.Description))
+		h.table.SetCell(row, 0, styles.CellPrimary(fmt.Sprintf("<%s>", tcell.KeyNames[key.Shortcut])))
+		h.table.SetCell(row, 1, styles.CellSecondary(key.Description))
 	}
 }
 
@@ -52,5 +54,4 @@ func (h *helper) reload(_ context.Context) {}
 
 func (n *helper) triggerAppDraw() {
 	n.TriggerAppDraw()
-
 }

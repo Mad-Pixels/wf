@@ -4,6 +4,7 @@ import "context"
 
 type Driver interface {
 	Scan(context.Context) ([]network, error)
+	Stat(context.Context) (*network, error)
 }
 
 type network struct {

@@ -77,8 +77,8 @@ func Run() {
 	netScan := component.NetScan(sync)
 	info := tview.NewFlex().
 		SetDirection(tview.FlexRow).
-		AddItem(sysInfo, 0, 2, false).
-		AddItem(netStat, 2, 1, false)
+		AddItem(sysInfo, 5, 0, false).
+		AddItem(netStat, 5, 1, false)
 
 	go func() {
 		for {
