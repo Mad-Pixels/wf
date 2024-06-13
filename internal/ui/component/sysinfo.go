@@ -14,7 +14,7 @@ import (
 func SysInfo(synk *binding.Synk) ComponentInterface {
 	self := &sysInfo{
 		Synk:  synk,
-		table: style.BaseTable(),
+		table: style.NewTable(),
 	}
 	self.reload(context.Background())
 	self.draw()
@@ -24,7 +24,7 @@ func SysInfo(synk *binding.Synk) ComponentInterface {
 type sysInfo struct {
 	usr   string
 	uid   string
-	table *tview.Table
+	table *style.Table
 	*binding.Synk
 }
 
@@ -33,7 +33,7 @@ func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {
 	return tview.
 		NewFlex().
 		SetDirection(tview.FlexRow).
-		AddItem(s.table, 0, 1, false)
+		AddItem(s.table.Object, 0, 1, false)
 }
 
 func (s *sysInfo) delay() int8 {
@@ -41,16 +41,17 @@ func (s *sysInfo) delay() int8 {
 }
 
 func (s *sysInfo) draw() {
-	s.table.SetCell(0, 0, style.CellTitle("Version:"))
-	s.table.SetCell(0, 1, style.CellText(wf.Version))
-	s.table.SetCell(1, 0, style.CellTitle("OS:"))
-	s.table.SetCell(1, 1, style.CellText(runtime.GOOS))
-	s.table.SetCell(2, 0, style.CellTitle("Arch:"))
-	s.table.SetCell(2, 1, style.CellText(runtime.GOARCH))
-	s.table.SetCell(3, 0, style.CellTitle("User:"))
-	s.table.SetCell(3, 1, style.CellText(s.usr))
-	s.table.SetCell(4, 0, style.CellTitle("UID:"))
-	s.table.SetCell(4, 1, style.CellText(s.uid))
+	s.table.AddCellTitle(0, 0, "Version:")
+	s.table.AddCellText(0, 1, wf.Version)
+	s.table.AddCellTitle(1, 0, "OS:")
+	s.table.AddCellText(1, 1, runtime.GOOS)
+	s.table.AddCellTitle(2, 0, "Arch:")
+	s.table.AddCellText(2, 1, runtime.GOARCH)
+	s.table.AddCellTitle(3, 0, "User:")
+	s.table.AddCellText(3, 1, s.usr)
+	s.table.AddCellTitle(4, 0, "UID:")
+	s.table.AddCellText(4, 1, s.uid)
+
 }
 
 func (s *sysInfo) reload(ctx context.Context) {

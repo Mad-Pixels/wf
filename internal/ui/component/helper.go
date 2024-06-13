@@ -14,7 +14,7 @@ func Helper(hotKeys *[]binding.Keys, synk *binding.Synk) ComponentInterface {
 	return new("helper", func() ComponentInterface {
 		self := &helper{
 			Synk:    synk,
-			table:   style.BaseTable(),
+			table:   style.NewTable(),
 			hotKeys: hotKeys,
 		}
 		self.reload(context.Background())
@@ -24,7 +24,7 @@ func Helper(hotKeys *[]binding.Keys, synk *binding.Synk) ComponentInterface {
 }
 
 type helper struct {
-	table   *tview.Table
+	table   *style.Table
 	hotKeys *[]binding.Keys
 	*binding.Synk
 }
@@ -33,7 +33,7 @@ func (h *helper) FlexItem(ctx context.Context) *tview.Flex {
 	return tview.
 		NewFlex().
 		SetDirection(tview.FlexRow).
-		AddItem(h.table, 0, 1, false)
+		AddItem(h.table.Object, 0, 1, false)
 }
 
 func (h *helper) delay() int8 {
@@ -45,8 +45,8 @@ func (h *helper) draw() {
 		return
 	}
 	for row, key := range *h.hotKeys {
-		h.table.SetCell(row, 0, style.CellPrimary(fmt.Sprintf("<%s>", tcell.KeyNames[key.Shortcut])))
-		h.table.SetCell(row, 1, style.CellSecondary(key.Description))
+		h.table.AddCellPrimary(row, 0, fmt.Sprintf("<%s>", tcell.KeyNames[key.Shortcut]))
+		h.table.AddCellSecondary(row, 1, key.Description)
 	}
 }
 

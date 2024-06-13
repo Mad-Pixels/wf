@@ -14,7 +14,7 @@ func NetStat(synk *binding.Synk) ComponentInterface {
 	return new("netStat", func() ComponentInterface {
 		self := &netStat{
 			Synk: synk,
-			text: style.BaseText(),
+			text: style.NewText(),
 		}
 		self.reload(context.Background())
 		self.draw()
@@ -23,7 +23,7 @@ func NetStat(synk *binding.Synk) ComponentInterface {
 }
 
 type netStat struct {
-	text   *tview.TextView
+	text   *style.Text
 	status string
 	*binding.Synk
 }
@@ -33,7 +33,7 @@ func (n *netStat) FlexItem(ctx context.Context) *tview.Flex {
 	return tview.
 		NewFlex().
 		SetDirection(tview.FlexRow).
-		AddItem(n.text, 0, 1, false)
+		AddItem(n.text.Object, 0, 1, false)
 }
 
 func (n *netStat) delay() int8 {
@@ -41,7 +41,7 @@ func (n *netStat) delay() int8 {
 }
 
 func (n *netStat) draw() {
-	n.text.SetText(fmt.Sprintf("\n%s\n", n.status))
+	n.text.Object.SetText(fmt.Sprintf("\n%s\n", n.status))
 }
 
 func (n *netStat) reload(ctx context.Context) {

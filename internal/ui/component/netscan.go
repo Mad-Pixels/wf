@@ -20,12 +20,12 @@ func NetScan(synk *binding.Synk) ComponentInterface {
 	return new("netScan", func() ComponentInterface {
 		self := &netScan{
 			Synk:  synk,
-			table: style.ContentTable().SetSelectable(true, false),
+			table: style.NewTable().AsContent(),
 			action: func(n network) {
 				synk.TriggerModal(n.GetSsid())
 			},
 		}
-		self.table.SetSelectedFunc(func(r, _ int) {
+		self.table.Object.SetSelectedFunc(func(r, _ int) {
 			self.action(self.networks[r-1])
 		})
 		self.reload(context.Background())
@@ -35,7 +35,7 @@ func NetScan(synk *binding.Synk) ComponentInterface {
 }
 
 type netScan struct {
-	table    *tview.Table
+	table    *style.Table
 	action   func(n network)
 	networks []network
 	*binding.Synk
@@ -46,7 +46,7 @@ func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
 	return tview.
 		NewFlex().
 		SetDirection(tview.FlexRow).
-		AddItem(n.table, 0, 1, true)
+		AddItem(n.table.Object, 0, 1, true)
 }
 
 func (n *netScan) delay() int8 {
@@ -54,16 +54,18 @@ func (n *netScan) delay() int8 {
 }
 
 func (n *netScan) draw() {
-	n.table.Clear()
-	n.table.SetCell(0, 0, style.CellHeader("ssid"))
-	n.table.SetCell(0, 1, style.CellHeader("freq"))
-	n.table.SetCell(0, 2, style.CellHeader("level"))
+	n.table.Object.Clear()
+	n.table.AddCellHeader(0, 0, "ssid")
+	n.table.AddCellHeader(0, 1, "freq")
+	n.table.AddCellHeader(0, 2, "level")
 
 	for row, network := range n.networks {
-		n.table.SetCell(row+1, 0, style.CellContent(network.GetSsid()))
-		n.table.SetCell(row+1, 1, style.CellContent(network.GetFreq()))
-		n.table.SetCell(row+1, 2, style.CellContent(network.GetLevel()))
+		n.table.AddCellContent(row+1, 0, network.GetSsid())
+		n.table.AddCellContent(row+1, 1, network.GetFreq())
+		n.table.AddCellContent(row+1, 2, network.GetLevel())
 	}
+
+	//n.table.SetTitle(fmt.Sprintf("[ NETWORKS (%d) ]", len(n.networks)))
 }
 
 func (n *netScan) reload(ctx context.Context) {
