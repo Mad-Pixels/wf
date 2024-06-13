@@ -1,8 +1,10 @@
 package style
 
 import (
+	"fmt"
 	"strings"
 
+	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
@@ -19,6 +21,20 @@ func NewTable() *Table {
 
 func (t *Table) WithTitle(title string) *Table {
 	t.title = title
+	t.Object.
+		SetTitle(fmt.Sprintf(" %s ", t.title)).
+		SetTitleColor(ColorTitle)
+	return t
+}
+
+func (t *Table) WithCount(count int) *Table {
+	if t.title == "" {
+		t.Object.
+			SetTitle(fmt.Sprintf("[%d]", count))
+		return t
+	}
+	t.Object.
+		SetTitle(fmt.Sprintf(" %s [red][%d][white] ", t.title, count))
 	return t
 }
 
@@ -29,6 +45,26 @@ func (t *Table) AsContent() *Table {
 		SetBorderColor(ColorContent).
 		SetBorder(true)
 	return t
+}
+
+func (t *Table) AddCellContent(r, c int, value string) {
+	t.addCell(r, c, value, ColorContent)
+}
+
+func (t *Table) AddCellSecondary(r, c int, value string) {
+	t.addCell(r, c, value, ColorSecondary)
+}
+
+func (t *Table) AddCellPrimary(r, c int, value string) {
+	t.addCell(r, c, value, ColorPrimary)
+}
+
+func (t *Table) AddCellTitle(r, c int, value string) {
+	t.addCell(r, c, value, ColorTitle)
+}
+
+func (t *Table) AddCellText(r, c int, value string) {
+	t.addCell(r, c, value, ColorText)
 }
 
 func (t *Table) AddCellHeader(r, c int, value string) {
@@ -45,62 +81,14 @@ func (t *Table) AddCellHeader(r, c int, value string) {
 	)
 }
 
-func (t *Table) AddCellContent(r, c int, value string) {
+func (t *Table) addCell(r, c int, value string, color tcell.Color) {
 	t.Object.SetCell(
 		r,
 		c,
 		tview.NewTableCell(
 			value,
 		).
-			SetTextColor(ColorContent).
-			SetAlign(tview.AlignLeft),
-	)
-}
-
-func (t *Table) AddCellSecondary(r, c int, value string) {
-	t.Object.SetCell(
-		r,
-		c,
-		tview.NewTableCell(
-			value,
-		).
-			SetTextColor(ColorSecondary).
-			SetAlign(tview.AlignLeft),
-	)
-}
-
-func (t *Table) AddCellPrimary(r, c int, value string) {
-	t.Object.SetCell(
-		r,
-		c,
-		tview.NewTableCell(
-			value,
-		).
-			SetTextColor(ColorPrimary).
-			SetAlign(tview.AlignLeft),
-	)
-}
-
-func (t *Table) AddCellTitle(r, c int, value string) {
-	t.Object.SetCell(
-		r,
-		c,
-		tview.NewTableCell(
-			value,
-		).
-			SetTextColor(ColorTitle).
-			SetAlign(tview.AlignLeft),
-	)
-}
-
-func (t *Table) AddCellText(r, c int, value string) {
-	t.Object.SetCell(
-		r,
-		c,
-		tview.NewTableCell(
-			value,
-		).
-			SetTextColor(ColorText).
+			SetTextColor(color).
 			SetAlign(tview.AlignLeft),
 	)
 }

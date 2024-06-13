@@ -20,7 +20,7 @@ func NetScan(synk *binding.Synk) ComponentInterface {
 	return new("netScan", func() ComponentInterface {
 		self := &netScan{
 			Synk:  synk,
-			table: style.NewTable().AsContent(),
+			table: style.NewTable().WithTitle("networks").WithCount(0).AsContent(),
 			action: func(n network) {
 				synk.TriggerModal(n.GetSsid())
 			},
@@ -64,8 +64,7 @@ func (n *netScan) draw() {
 		n.table.AddCellContent(row+1, 1, network.GetFreq())
 		n.table.AddCellContent(row+1, 2, network.GetLevel())
 	}
-
-	//n.table.SetTitle(fmt.Sprintf("[ NETWORKS (%d) ]", len(n.networks)))
+	n.table.WithCount(len(n.networks))
 }
 
 func (n *netScan) reload(ctx context.Context) {
