@@ -5,7 +5,7 @@ import (
 
 	"github.com/Mad-Pixels/wf/internal/net"
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
-	"github.com/Mad-Pixels/wf/internal/ui/styles"
+	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
 
@@ -20,7 +20,7 @@ func NetScan(synk *binding.Synk) ComponentInterface {
 	return new("netScan", func() ComponentInterface {
 		self := &netScan{
 			Synk:  synk,
-			table: styles.ContentTable().SetSelectable(true, false),
+			table: style.ContentTable().SetSelectable(true, false),
 			action: func(n network) {
 				synk.TriggerModal(n.GetSsid())
 			},
@@ -55,14 +55,14 @@ func (n *netScan) delay() int8 {
 
 func (n *netScan) draw() {
 	n.table.Clear()
-	n.table.SetCell(0, 0, styles.CellHeader("ssid"))
-	n.table.SetCell(0, 1, styles.CellHeader("freq"))
-	n.table.SetCell(0, 2, styles.CellHeader("level"))
+	n.table.SetCell(0, 0, style.CellHeader("ssid"))
+	n.table.SetCell(0, 1, style.CellHeader("freq"))
+	n.table.SetCell(0, 2, style.CellHeader("level"))
 
 	for row, network := range n.networks {
-		n.table.SetCell(row+1, 0, styles.CellContent(network.GetSsid()))
-		n.table.SetCell(row+1, 1, styles.CellContent(network.GetFreq()))
-		n.table.SetCell(row+1, 2, styles.CellContent(network.GetLevel()))
+		n.table.SetCell(row+1, 0, style.CellContent(network.GetSsid()))
+		n.table.SetCell(row+1, 1, style.CellContent(network.GetFreq()))
+		n.table.SetCell(row+1, 2, style.CellContent(network.GetLevel()))
 	}
 }
 

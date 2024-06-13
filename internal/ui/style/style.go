@@ -1,4 +1,4 @@
-package styles
+package style
 
 import (
 	"strings"
@@ -24,9 +24,35 @@ func ContentTable() *tview.Table {
 	return table
 }
 
+func BlockColumn() *tview.Flex {
+	flex := tview.NewFlex()
+	flex.
+		SetDirection(tview.FlexColumn).
+		SetBorderPadding(0, 0, 1, 1)
+	return flex
+}
+
+func BlockRow() *tview.Flex {
+	flex := tview.NewFlex()
+	flex.
+		SetDirection(tview.FlexRow).
+		SetBorderPadding(0, 0, 1, 1)
+	return flex
+}
+
 func BaseTable() *tview.Table {
 	table := tview.NewTable()
 	return table
+}
+
+func BaseText() *tview.TextView {
+	text := tview.NewTextView()
+	return text
+}
+
+func LogText() *tview.TextView {
+	text := tview.NewTextView()
+	return text
 }
 
 func CellTitle(val string) *tview.TableCell {

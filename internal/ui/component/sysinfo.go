@@ -7,14 +7,14 @@ import (
 
 	"github.com/Mad-Pixels/wf"
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
-	"github.com/Mad-Pixels/wf/internal/ui/styles"
+	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
 
 func SysInfo(synk *binding.Synk) ComponentInterface {
 	self := &sysInfo{
 		Synk:  synk,
-		table: styles.BaseTable(),
+		table: style.BaseTable(),
 	}
 	self.reload(context.Background())
 	self.draw()
@@ -41,16 +41,16 @@ func (s *sysInfo) delay() int8 {
 }
 
 func (s *sysInfo) draw() {
-	s.table.SetCell(0, 0, styles.CellTitle("Version:"))
-	s.table.SetCell(0, 1, styles.CellText(wf.Version))
-	s.table.SetCell(1, 0, styles.CellTitle("OS:"))
-	s.table.SetCell(1, 1, styles.CellText(runtime.GOOS))
-	s.table.SetCell(2, 0, styles.CellTitle("Arch:"))
-	s.table.SetCell(2, 1, styles.CellText(runtime.GOARCH))
-	s.table.SetCell(3, 0, styles.CellTitle("User:"))
-	s.table.SetCell(3, 1, styles.CellText(s.usr))
-	s.table.SetCell(4, 0, styles.CellTitle("UID:"))
-	s.table.SetCell(4, 1, styles.CellText(s.uid))
+	s.table.SetCell(0, 0, style.CellTitle("Version:"))
+	s.table.SetCell(0, 1, style.CellText(wf.Version))
+	s.table.SetCell(1, 0, style.CellTitle("OS:"))
+	s.table.SetCell(1, 1, style.CellText(runtime.GOOS))
+	s.table.SetCell(2, 0, style.CellTitle("Arch:"))
+	s.table.SetCell(2, 1, style.CellText(runtime.GOARCH))
+	s.table.SetCell(3, 0, style.CellTitle("User:"))
+	s.table.SetCell(3, 1, style.CellText(s.usr))
+	s.table.SetCell(4, 0, style.CellTitle("UID:"))
+	s.table.SetCell(4, 1, style.CellText(s.uid))
 }
 
 func (s *sysInfo) reload(ctx context.Context) {

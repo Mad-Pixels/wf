@@ -1,6 +1,7 @@
 package frame
 
 import (
+	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
 
@@ -15,7 +16,7 @@ func NewPage() *Page {
 }
 
 func (p *Page) SetHeader(header []*tview.Flex) {
-	headerFlex := tview.NewFlex().SetDirection(tview.FlexColumn)
+	headerFlex := style.BlockColumn()
 	for col, item := range header {
 		headerFlex.AddItem(item, 0, col+1, false)
 	}
@@ -27,5 +28,7 @@ func (p *Page) SetContent(content *tview.Flex) {
 }
 
 func (p *Page) SetFooter(footer *tview.Flex) {
-	p.Flex.AddItem(footer, 4, 1, false)
+	footerFlex := style.BlockRow()
+	footerFlex.AddItem(footer, 0, 1, false)
+	p.Flex.AddItem(footerFlex, 6, 1, false)
 }

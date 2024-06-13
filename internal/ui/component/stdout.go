@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
+	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
 
@@ -11,7 +12,7 @@ func StdOut(synk *binding.Synk) ComponentInterface {
 	return new("stdout", func() ComponentInterface {
 		self := &stdout{
 			Synk: synk,
-			text: tview.NewTextView(),
+			text: style.LogText(),
 		}
 		self.reload(context.Background())
 		self.draw()

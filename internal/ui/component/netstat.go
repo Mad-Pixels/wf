@@ -6,6 +6,7 @@ import (
 
 	"github.com/Mad-Pixels/wf/internal/net"
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
+	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
 
@@ -13,7 +14,7 @@ func NetStat(synk *binding.Synk) ComponentInterface {
 	return new("netStat", func() ComponentInterface {
 		self := &netStat{
 			Synk: synk,
-			text: tview.NewTextView(),
+			text: style.BaseText(),
 		}
 		self.reload(context.Background())
 		self.draw()
