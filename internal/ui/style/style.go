@@ -4,6 +4,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
+// Predefined colors.
 const (
 	ColorTitle     = tcell.ColorOrange
 	ColorText      = tcell.ColorWhiteSmoke
