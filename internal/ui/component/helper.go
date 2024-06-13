@@ -10,34 +10,19 @@ import (
 	"github.com/rivo/tview"
 )
 
-func Helper(hotKeys *[]binding.Keys, synk *binding.Synk) ComponentInterface {
-	return new("helper", func() ComponentInterface {
-		self := &helper{
-			Synk:    synk,
-			table:   style.NewTable(),
-			hotKeys: hotKeys,
-		}
-		self.reload(context.Background())
-		self.draw()
-		return self
-	})
-}
-
 type helper struct {
+	*binding.Synk
+
 	table   *style.Table
 	hotKeys *[]binding.Keys
-	*binding.Synk
-}
-
-func (h *helper) FlexItem(ctx context.Context) *tview.Flex {
-	return tview.
-		NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(h.table.Object, 0, 1, false)
 }
 
 func (h *helper) delay() int8 {
 	return 100
+}
+
+func (n *helper) triggerAppDraw() {
+	n.TriggerAppDraw()
 }
 
 func (h *helper) draw() {
@@ -52,6 +37,22 @@ func (h *helper) draw() {
 
 func (h *helper) reload(_ context.Context) {}
 
-func (n *helper) triggerAppDraw() {
-	n.TriggerAppDraw()
+func (h *helper) FlexItem(ctx context.Context) *tview.Flex {
+	return tview.
+		NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(h.table.Object, 0, 1, false)
+}
+
+func Helper(hotKeys *[]binding.Keys, synk *binding.Synk) ComponentInterface {
+	return new("helper", func() ComponentInterface {
+		self := &helper{
+			Synk:    synk,
+			table:   style.NewTable(),
+			hotKeys: hotKeys,
+		}
+		self.reload(context.Background())
+		self.draw()
+		return self
+	})
 }

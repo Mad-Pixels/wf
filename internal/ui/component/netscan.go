@@ -16,41 +16,20 @@ type network interface {
 	GetLevel() string
 }
 
-func NetScan(synk *binding.Synk) ComponentInterface {
-	return new("netScan", func() ComponentInterface {
-		self := &netScan{
-			Synk:  synk,
-			table: style.NewTable().WithTitle("networks").WithCount(0).AsContent(),
-			action: func(n network) {
-				synk.TriggerModal(n.GetSsid())
-			},
-		}
-		self.table.Object.SetSelectedFunc(func(r, _ int) {
-			self.action(self.networks[r-1])
-		})
-		self.reload(context.Background())
-		self.draw()
-		return self
-	})
-}
-
 type netScan struct {
+	*binding.Synk
+
 	table    *style.Table
 	action   func(n network)
 	networks []network
-	*binding.Synk
-}
-
-func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
-	go schedule(ctx, n)
-	return tview.
-		NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(n.table.Object, 0, 1, true)
 }
 
 func (n *netScan) delay() int8 {
 	return 5
+}
+
+func (n *netScan) triggerAppDraw() {
+	n.TriggerAppDraw()
 }
 
 func (n *netScan) draw() {
@@ -68,17 +47,44 @@ func (n *netScan) draw() {
 }
 
 func (n *netScan) reload(ctx context.Context) {
-	result, _ := net.NewNetworkManager().Scan(ctx)
+	defer n.draw()
+	n.networks = []network{}
 
-	networks := []network{}
-	for _, item := range result {
-		networks = append(networks, item)
+	result, err := net.NewNetworkManager().Scan(ctx)
+	if err != nil {
+		n.PutLog(err.Error())
+		return
 	}
-	n.networks = networks
-	n.draw()
-	n.PutLog("netscan")
+	for _, item := range result {
+		n.networks = append(n.networks, item)
+	}
 }
 
-func (n *netScan) triggerAppDraw() {
-	n.TriggerAppDraw()
+func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
+	go schedule(ctx, n)
+	return tview.
+		NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(n.table.Object, 0, 1, true)
+}
+
+func NetScan(synk *binding.Synk) ComponentInterface {
+	return new("netscan", func() ComponentInterface {
+		self := &netScan{
+			Synk: synk,
+			table: style.NewTable().
+				WithTitle("networks").
+				WithCount(0).
+				AsContent(),
+			action: func(n network) {
+				synk.TriggerModal(n.GetSsid())
+			},
+		}
+		self.table.Object.SetSelectedFunc(func(r, _ int) {
+			self.action(self.networks[r-1])
+		})
+		self.reload(context.Background())
+		self.draw()
+		return self
+	})
 }

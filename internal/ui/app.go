@@ -69,7 +69,7 @@ func Run() {
 		},
 	}
 
-	sysInfo := component.SysInfo(sync).FlexItem(ctx)
+	sysInfo := component.SysInfo(sync).FlexItem(ctx) //component.SysInfo(sync).FlexItem(ctx)
 	netStat := component.NetStat(sync).FlexItem(ctx)
 	helper := component.Helper(&keys, sync).FlexItem(ctx)
 	std := component.StdOut(sync).FlexItem(ctx)

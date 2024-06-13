@@ -11,33 +11,20 @@ import (
 	"github.com/rivo/tview"
 )
 
-func SysInfo(synk *binding.Synk) ComponentInterface {
-	self := &sysInfo{
-		Synk:  synk,
-		table: style.NewTable(),
-	}
-	self.reload(context.Background())
-	self.draw()
-	return self
-}
-
 type sysInfo struct {
+	*binding.Synk
+
 	usr   string
 	uid   string
 	table *style.Table
-	*binding.Synk
-}
-
-func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {
-	go schedule(ctx, s)
-	return tview.
-		NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(s.table.Object, 0, 1, false)
 }
 
 func (s *sysInfo) delay() int8 {
 	return 10
+}
+
+func (n *sysInfo) triggerAppDraw() {
+	n.TriggerAppDraw()
 }
 
 func (s *sysInfo) draw() {
@@ -51,7 +38,6 @@ func (s *sysInfo) draw() {
 	s.table.AddCellText(3, 1, s.usr)
 	s.table.AddCellTitle(4, 0, "UID:")
 	s.table.AddCellText(4, 1, s.uid)
-
 }
 
 func (s *sysInfo) reload(ctx context.Context) {
@@ -71,6 +57,22 @@ func (s *sysInfo) reload(ctx context.Context) {
 	s.uid = info.Uid
 }
 
-func (n *sysInfo) triggerAppDraw() {
-	n.TriggerAppDraw()
+func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {
+	go schedule(ctx, s)
+	return tview.
+		NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(s.table.Object, 0, 1, false)
+}
+
+func SysInfo(synk *binding.Synk) ComponentInterface {
+	return new("sysinfo", func() ComponentInterface {
+		self := &sysInfo{
+			Synk:  synk,
+			table: style.NewTable(),
+		}
+		self.reload(context.Background())
+		self.draw()
+		return self
+	})
 }

@@ -10,34 +10,19 @@ import (
 	"github.com/rivo/tview"
 )
 
-func NetStat(synk *binding.Synk) ComponentInterface {
-	return new("netStat", func() ComponentInterface {
-		self := &netStat{
-			Synk: synk,
-			text: style.NewText(),
-		}
-		self.reload(context.Background())
-		self.draw()
-		return self
-	})
-}
-
 type netStat struct {
+	*binding.Synk
+
 	text   *style.Text
 	status string
-	*binding.Synk
-}
-
-func (n *netStat) FlexItem(ctx context.Context) *tview.Flex {
-	go schedule(ctx, n)
-	return tview.
-		NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(n.text.Object, 0, 1, false)
 }
 
 func (n *netStat) delay() int8 {
 	return 3
+}
+
+func (n *netStat) triggerAppDraw() {
+	n.TriggerAppDraw()
 }
 
 func (n *netStat) draw() {
@@ -60,6 +45,22 @@ func (n *netStat) reload(ctx context.Context) {
 	n.status = status
 }
 
-func (n *netStat) triggerAppDraw() {
-	n.TriggerAppDraw()
+func (n *netStat) FlexItem(ctx context.Context) *tview.Flex {
+	go schedule(ctx, n)
+	return tview.
+		NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(n.text.Object, 0, 1, false)
+}
+
+func NetStat(synk *binding.Synk) ComponentInterface {
+	return new("netstat", func() ComponentInterface {
+		self := &netStat{
+			Synk: synk,
+			text: style.NewText(),
+		}
+		self.reload(context.Background())
+		self.draw()
+		return self
+	})
 }
