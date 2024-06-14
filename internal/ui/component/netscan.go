@@ -50,7 +50,7 @@ func (n *netScan) reload(ctx context.Context) {
 	defer n.draw()
 	n.networks = []network{}
 
-	result, err := net.NewNetworkManager().Scan(ctx)
+	result, err := net.NewNetwork().Scan(ctx)
 	if err != nil {
 		n.PutLog(err.Error())
 		return

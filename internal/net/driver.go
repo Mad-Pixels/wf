@@ -14,6 +14,20 @@ type network struct {
 	quality string
 }
 
+type Network struct{}
+
+func NewNetwork() *Network {
+	return &Network{}
+}
+
+func (n Network) Scan(ctx context.Context) ([]network, error) {
+	return scan()
+}
+
+func (n Network) Stat(ctx context.Context) (*network, error) {
+	return stat()
+}
+
 func (n network) GetSsid() string {
 	return n.ssid
 }
@@ -29,3 +43,5 @@ func (n network) GetLevel() string {
 func (n network) GetQuality() string {
 	return n.quality
 }
+
+// ---

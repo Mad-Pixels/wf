@@ -33,7 +33,7 @@ func (n *netStat) reload(ctx context.Context) {
 	defer n.draw()
 
 	var status = "n/a"
-	info, err := net.NewNetworkManager().Stat(ctx)
+	info, err := net.NewNetwork().Stat(ctx)
 	switch {
 	case err != nil:
 		n.PutLog(err.Error())

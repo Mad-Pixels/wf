@@ -1,18 +1,11 @@
 package net
 
 import (
-	"context"
 	"math/rand"
 	"time"
 )
 
-type NetworkManager struct{}
-
-func NewNetworkManager() Driver {
-	return &NetworkManager{}
-}
-
-func (n NetworkManager) Scan(ctx context.Context) ([]network, error) {
+func scan() ([]network, error) {
 	rand.Seed(time.Now().UnixNano())
 	numNetworks := rand.Intn(10) + 1
 
@@ -21,21 +14,11 @@ func (n NetworkManager) Scan(ctx context.Context) ([]network, error) {
 		networks[i] = randomNetwork()
 	}
 	return networks, nil
-
 }
 
-func (n NetworkManager) Stat(ctx context.Context) (*network, error) {
+func stat() (*network, error) {
 	nn := randomNetwork()
 	return &nn, nil
-}
-
-func randomString(n int) string {
-	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(b)
 }
 
 func randomNetwork() network {
@@ -45,4 +28,13 @@ func randomNetwork() network {
 		level:   randomString(6),
 		quality: randomString(8),
 	}
+}
+
+func randomString(n int) string {
+	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
