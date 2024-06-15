@@ -2,7 +2,6 @@ package component
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Mad-Pixels/wf/internal/net"
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
@@ -21,7 +20,6 @@ type netScan struct {
 	*binding.Synk
 
 	table    *style.Table
-	action   func(n network)
 	networks []network
 }
 
@@ -77,25 +75,34 @@ func NetScan(synk *binding.Synk) ComponentInterface {
 				WithTitle("networks").
 				WithCount(0).
 				AsContent(),
-			// action: func(n network) {
-			// 	synk.TriggerModal(func(id int) {
-			// 		panic(id)
-			// 	})
-			// },
-		}
-		self.action = func(n network) {
-			synk.TriggerModal(func(id int, ssid, password string) {
-				if id == 1 {
-					err := net.NewNetwork().Conn(context.Background(), ssid, password)
-					if err != nil {
-						self.PutLog(err.Error())
-					}
-				}
-				self.PutLog(fmt.Sprintf("%v", id))
-			})
 		}
 		self.table.Object.SetSelectedFunc(func(r, _ int) {
-			self.action(self.networks[r-1])
+			p := tview.NewForm().
+				AddInputField("SSID", "", 20, nil, nil).
+				AddInputField("Password", "", 20, nil, nil)
+
+			p.AddButton("Connect", func() {
+				self.PutLog("connect")
+			})
+			p.AddButton("Cancel", func() {
+				self.PutLog("cancel")
+			})
+
+			//content := tview.NewFlex().
+			//	SetDirection(tview.FlexRow).
+			//	AddItem(nil, 0, 1, false).
+			//	AddItem(tview.NewFlex().SetDirection(tview.FlexColumn).
+			//		AddItem(nil, 0, 1, false).
+			//		AddItem(p, 0, 1, true).
+			//		AddItem(nil, 0, 1, false), 0, 1, true).
+			//	AddItem(nil, 0, 1, false)
+
+			ttr := binding.TriggerModalData{
+				Title: "title",
+				P:     p,
+			}
+
+			synk.TriggerModal(ttr)
 		})
 		self.reload(context.Background())
 		self.draw()

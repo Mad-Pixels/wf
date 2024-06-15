@@ -9,7 +9,7 @@ import (
 
 func scan() ([]network, error) {
 	rand.Seed(time.Now().UnixNano())
-	numNetworks := rand.Intn(10) + 1
+	numNetworks := rand.Intn(100) + 1
 
 	networks := make([]network, numNetworks)
 	for i := 0; i < numNetworks; i++ {

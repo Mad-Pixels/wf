@@ -1,12 +1,16 @@
 package binding
 
+import (
+	"github.com/rivo/tview"
+)
+
 type Synk struct {
 	drawCh chan struct{}
-	modal  chan func(id int, ssid, password string)
+	modal  chan TriggerModalData
 	std    chan string
 }
 
-func NewSynk(ch chan struct{}, chm chan func(id int, ssid, password string), chio chan string) *Synk {
+func NewSynk(ch chan struct{}, chm chan TriggerModalData, chio chan string) *Synk {
 	return &Synk{
 		drawCh: ch,
 		modal:  chm,
@@ -18,8 +22,13 @@ func (s *Synk) TriggerAppDraw() {
 	s.drawCh <- struct{}{}
 }
 
-func (s *Synk) TriggerModal(f func(id int, ssid, password string)) {
-	s.modal <- f
+type TriggerModalData struct {
+	Title string
+	P     *tview.Form
+}
+
+func (s *Synk) TriggerModal(tr TriggerModalData) {
+	s.modal <- tr
 }
 
 func (s *Synk) PutLog(data string) {
