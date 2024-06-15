@@ -2,6 +2,7 @@ package component
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Mad-Pixels/wf/internal/net"
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
@@ -76,9 +77,22 @@ func NetScan(synk *binding.Synk) ComponentInterface {
 				WithTitle("networks").
 				WithCount(0).
 				AsContent(),
-			action: func(n network) {
-				synk.TriggerModal(n.GetSsid())
-			},
+			// action: func(n network) {
+			// 	synk.TriggerModal(func(id int) {
+			// 		panic(id)
+			// 	})
+			// },
+		}
+		self.action = func(n network) {
+			synk.TriggerModal(func(id int, ssid, password string) {
+				if id == 1 {
+					err := net.NewNetwork().Conn(context.Background(), ssid, password)
+					if err != nil {
+						self.PutLog(err.Error())
+					}
+				}
+				self.PutLog(fmt.Sprintf("%v", id))
+			})
 		}
 		self.table.Object.SetSelectedFunc(func(r, _ int) {
 			self.action(self.networks[r-1])

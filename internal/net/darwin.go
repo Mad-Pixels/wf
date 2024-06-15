@@ -40,3 +40,7 @@ func randomString(n int) string {
 	}
 	return string(b)
 }
+
+func conn(ssid, password string) error {
+	return nil
+}

@@ -5,6 +5,7 @@ import "context"
 type Driver interface {
 	Scan(context.Context) ([]network, error)
 	Stat(context.Context) (*network, error)
+	Conn(ctx context.Context, ssid, password string) error
 }
 
 type network struct {
@@ -26,6 +27,10 @@ func (n Network) Scan(ctx context.Context) ([]network, error) {
 
 func (n Network) Stat(ctx context.Context) (*network, error) {
 	return stat()
+}
+
+func (n Network) Conn(ctx context.Context, ssid, password string) error {
+	return conn(ssid, password)
 }
 
 func (n network) GetSsid() string {
