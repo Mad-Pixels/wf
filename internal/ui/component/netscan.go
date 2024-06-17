@@ -2,6 +2,7 @@ package component
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Mad-Pixels/wf/internal/net"
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
@@ -85,6 +86,9 @@ func NetScan(synk *binding.Synk) ComponentInterface {
 						r, _ := self.table.Object.GetSelection()
 						return self.networks[r-1].GetSsid()
 					}(),
+					func(ssid string) {
+						self.PutLog(fmt.Sprintf("exec proc for %s", ssid))
+					},
 				),
 			}
 			synk.TriggerModal(ttr)

@@ -28,9 +28,12 @@ func (u *ui) Run() error {
 }
 
 func (u *ui) ShowModal(data binding.TriggerModalData) {
-	data.P.Form.Object.AddButton("cancel", func() {
+	// data.P.Form.Object.AddButton("cancel", func() {
+	// 	u.app.SetRoot(u.pages.ShowPage("main"), true)
+	// })
+	data.P.CloseFunc = func() {
 		u.app.SetRoot(u.pages.ShowPage("main"), true)
-	})
+	}
 
 	container := tview.NewPages().
 		AddPage("main", u.pages.ShowPage("main"), true, true).
