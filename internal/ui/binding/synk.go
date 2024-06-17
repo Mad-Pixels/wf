@@ -1,6 +1,8 @@
 package binding
 
-import "github.com/Mad-Pixels/wf/internal/ui/form"
+import (
+	"github.com/Mad-Pixels/wf/internal/ui/modal"
+)
 
 type Synk struct {
 	drawCh chan struct{}
@@ -22,7 +24,7 @@ func (s *Synk) TriggerAppDraw() {
 
 type TriggerModalData struct {
 	Title string
-	P     *form.Form
+	P     *modal.Modal
 }
 
 func (s *Synk) TriggerModal(tr TriggerModalData) {

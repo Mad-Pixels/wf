@@ -5,7 +5,7 @@ import (
 
 	"github.com/Mad-Pixels/wf/internal/net"
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
-	"github.com/Mad-Pixels/wf/internal/ui/form"
+	"github.com/Mad-Pixels/wf/internal/ui/modal"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
@@ -80,7 +80,7 @@ func NetScan(synk *binding.Synk) ComponentInterface {
 		self.table.Object.SetSelectedFunc(func(r, _ int) {
 			ttr := binding.TriggerModalData{
 				Title: "title",
-				P:     form.NewWiFiConn(),
+				P:     modal.NewWiFiConn(),
 			}
 			synk.TriggerModal(ttr)
 		})
