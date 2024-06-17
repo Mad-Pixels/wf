@@ -32,7 +32,7 @@ func (u *ui) ShowModal(data binding.TriggerModalData) {
 		AddPage("main", u.pages.ShowPage("main"), true, true).
 		AddPage("modal", data.P.Content("connet").Object, true, true)
 
-	u.app.SetRoot(container, true) //.Draw()
+	u.app.SetRoot(container, true)
 }
 
 func (u *ui) Draw() {
