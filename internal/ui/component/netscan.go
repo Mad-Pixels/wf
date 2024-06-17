@@ -80,7 +80,12 @@ func NetScan(synk *binding.Synk) ComponentInterface {
 		self.table.Object.SetSelectedFunc(func(r, _ int) {
 			ttr := binding.TriggerModalData{
 				Title: "title",
-				P:     modal.NewWiFiConn(),
+				P: modal.NewWiFiConn(
+					func() string {
+						r, _ := self.table.Object.GetSelection()
+						return self.networks[r-1].GetSsid()
+					}(),
+				),
 			}
 			synk.TriggerModal(ttr)
 		})

@@ -4,10 +4,11 @@ import (
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 )
 
-func NewWiFiConn() *Modal {
+// NewWifiConn is a modal object for WiFi connection.
+func NewWiFiConn(ssid string) *Modal {
 	form := style.NewForm()
 	form.Object.
-		AddInputField("SSID:", "", 0, nil, nil).
+		AddInputField("SSID:", ssid, 0, nil, nil).
 		AddInputField("Password:", "", 0, nil, nil).
 		AddButton("connect", func() {}).
 		AddButton("cancel", func() {})

@@ -4,10 +4,12 @@ import (
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 )
 
+// Modal ...
 type Modal struct {
 	form *style.Form
 }
 
+// Content return tview.Flex as a modal object.
 func (m Modal) Content(title string) *style.Flex {
 	flex := style.NewFlex()
 	flex.Object.
