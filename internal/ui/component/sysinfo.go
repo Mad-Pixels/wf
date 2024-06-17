@@ -6,13 +6,14 @@ import (
 	"runtime"
 
 	"github.com/Mad-Pixels/wf"
-	"github.com/Mad-Pixels/wf/internal/ui/binding"
+	"github.com/Mad-Pixels/wf/internal/ui/extension"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
 
 type sysInfo struct {
-	*binding.Synk
+	draw   *extension.TriggerDraw
+	logger *extension.Logger
 
 	usr   string
 	uid   string
@@ -23,11 +24,11 @@ func (s *sysInfo) delay() int8 {
 	return 10
 }
 
-func (n *sysInfo) triggerAppDraw() {
-	n.TriggerAppDraw()
+func (n *sysInfo) drawRoot() {
+	n.draw.Root()
 }
 
-func (s *sysInfo) draw() {
+func (s *sysInfo) drawComponent() {
 	s.table.AddCellTitle(0, 0, "Version:")
 	s.table.AddCellText(0, 1, wf.Version)
 	s.table.AddCellTitle(1, 0, "OS:")
@@ -41,14 +42,14 @@ func (s *sysInfo) draw() {
 }
 
 func (s *sysInfo) reload(ctx context.Context) {
-	defer s.draw()
+	defer s.drawComponent()
 	var (
 		uid = "n/a"
 		usr = "n/a"
 	)
 	info, err := user.Current()
 	if err != nil {
-		s.PutLog(err.Error())
+		s.logger.Put(err.Error())
 		s.usr = usr
 		s.uid = uid
 		return
@@ -65,14 +66,15 @@ func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.table.Object, 0, 1, false)
 }
 
-func SysInfo(synk *binding.Synk) ComponentInterface {
+func SysInfo(drawRootTrigger *extension.TriggerDraw, logger *extension.Logger) ComponentInterface {
 	return new("sysinfo", func() ComponentInterface {
 		self := &sysInfo{
-			Synk:  synk,
-			table: style.NewTable(),
+			draw:   drawRootTrigger,
+			logger: logger,
+			table:  style.NewTable(),
 		}
 		self.reload(context.Background())
-		self.draw()
+		self.drawComponent()
 		return self
 	})
 }

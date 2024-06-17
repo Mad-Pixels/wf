@@ -7,23 +7,25 @@ import (
 
 // NewWifiConn is a modal object for WiFi connection.
 func NewWiFiConn(ssid string, conn func(ssid string)) *Modal {
-	modal := &Modal{
-		CloseFunc: func() {},
-	}
+	var (
+		ssidField = "SSID:"
+		passField = "password:"
+
+		connectBtn = "connect"
+		cancelBtn  = "cancel"
+	)
+	modal := &Modal{CloseFunc: func() {}}
 
 	form := style.NewForm()
 	form.Object.
-		AddInputField("SSID:", ssid, 0, nil, nil).
-		AddInputField("Password:", "", 0, nil, nil)
+		AddInputField(ssidField, ssid, 0, nil, nil).
+		AddInputField(passField, "", 0, nil, nil)
 	form.Object.
-		AddButton("connect", func() {
+		AddButton(connectBtn, func() {
 			defer modal.CloseFunc()
-			conn(form.Object.GetFormItemByLabel("SSID:").(*tview.InputField).GetText())
+			conn(form.Object.GetFormItemByLabel(ssidField).(*tview.InputField).GetText())
 		}).
-		AddButton("cancel", func() {
-			modal.CloseFunc()
-		})
-
+		AddButton(cancelBtn, func() { modal.CloseFunc() })
 	modal.form = form
 	return modal
 }

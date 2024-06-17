@@ -13,9 +13,9 @@ type ComponentInterface interface {
 	FlexItem(context.Context) *tview.Flex
 
 	reload(context.Context)
-	triggerAppDraw()
+	drawComponent()
+	drawRoot()
 	delay() int8
-	draw()
 }
 
 var (
@@ -53,7 +53,7 @@ func schedule[T ComponentInterface](ctx context.Context, t T) {
 		select {
 		case <-ticker.C:
 			t.reload(ctx)
-			t.triggerAppDraw()
+			t.drawRoot()
 		case <-ctx.Done():
 			return
 		}

@@ -5,13 +5,14 @@ import (
 	"fmt"
 
 	"github.com/Mad-Pixels/wf/internal/net"
-	"github.com/Mad-Pixels/wf/internal/ui/binding"
+	"github.com/Mad-Pixels/wf/internal/ui/extension"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
 
 type netStat struct {
-	*binding.Synk
+	draw   *extension.TriggerDraw
+	logger *extension.Logger
 
 	text   *style.Text
 	status string
@@ -21,22 +22,22 @@ func (n *netStat) delay() int8 {
 	return 3
 }
 
-func (n *netStat) triggerAppDraw() {
-	n.TriggerAppDraw()
+func (n *netStat) drawRoot() {
+	n.draw.Root()
 }
 
-func (n *netStat) draw() {
+func (n *netStat) drawComponent() {
 	n.text.Object.SetText(fmt.Sprintf("\n%s\n", n.status))
 }
 
 func (n *netStat) reload(ctx context.Context) {
-	defer n.draw()
+	defer n.drawComponent()
 
 	var status = "n/a"
 	info, err := net.NewNetwork().Stat(ctx)
 	switch {
 	case err != nil:
-		n.PutLog(err.Error())
+		n.logger.Put(err.Error())
 	case info == nil:
 		status = "no active connection"
 	default:
@@ -53,14 +54,15 @@ func (n *netStat) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.text.Object, 0, 1, false)
 }
 
-func NetStat(synk *binding.Synk) ComponentInterface {
+func NetStat(drawRootTrigger *extension.TriggerDraw, logger *extension.Logger) ComponentInterface {
 	return new("netstat", func() ComponentInterface {
 		self := &netStat{
-			Synk: synk,
-			text: style.NewText(),
+			draw:   drawRootTrigger,
+			logger: logger,
+			text:   style.NewText(),
 		}
 		self.reload(context.Background())
-		self.draw()
+		self.drawComponent()
 		return self
 	})
 }

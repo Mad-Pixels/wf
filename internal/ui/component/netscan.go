@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Mad-Pixels/wf/internal/net"
-	"github.com/Mad-Pixels/wf/internal/ui/binding"
+	"github.com/Mad-Pixels/wf/internal/ui/extension"
 	"github.com/Mad-Pixels/wf/internal/ui/modal"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
@@ -19,7 +19,9 @@ type network interface {
 }
 
 type netScan struct {
-	*binding.Synk
+	draw   *extension.TriggerDraw
+	logger *extension.Logger
+	modal  *extension.TriggerModal
 
 	table    *style.Table
 	networks []network
@@ -29,11 +31,11 @@ func (n *netScan) delay() int8 {
 	return 5
 }
 
-func (n *netScan) triggerAppDraw() {
-	n.TriggerAppDraw()
+func (n *netScan) drawRoot() {
+	n.draw.Root()
 }
 
-func (n *netScan) draw() {
+func (n *netScan) drawComponent() {
 	n.table.Object.Clear()
 	n.table.AddCellHeader(0, 0, "ssid")
 	n.table.AddCellHeader(0, 1, "freq")
@@ -48,12 +50,12 @@ func (n *netScan) draw() {
 }
 
 func (n *netScan) reload(ctx context.Context) {
-	defer n.draw()
+	defer n.drawComponent()
 	n.networks = []network{}
 
 	result, err := net.NewNetwork().Scan(ctx)
 	if err != nil {
-		n.PutLog(err.Error())
+		n.logger.Put(err.Error())
 		return
 	}
 	for _, item := range result {
@@ -69,32 +71,33 @@ func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.table.Object, 0, 1, true)
 }
 
-func NetScan(synk *binding.Synk) ComponentInterface {
+func NetScan(drawRootTrigger *extension.TriggerDraw, logger *extension.Logger, m *extension.TriggerModal) ComponentInterface {
 	return new("netscan", func() ComponentInterface {
 		self := &netScan{
-			Synk: synk,
+			draw:   drawRootTrigger,
+			modal:  m,
+			logger: logger,
 			table: style.NewTable().
 				WithTitle("networks").
 				WithCount(0).
 				AsContent(),
 		}
 		self.table.Object.SetSelectedFunc(func(r, _ int) {
-			ttr := binding.TriggerModalData{
-				Title: "title",
-				P: modal.NewWiFiConn(
+			ttr := extension.ModalData{
+				M: modal.NewWiFiConn(
 					func() string {
 						r, _ := self.table.Object.GetSelection()
 						return self.networks[r-1].GetSsid()
 					}(),
 					func(ssid string) {
-						self.PutLog(fmt.Sprintf("exec proc for %s", ssid))
+						self.logger.Put(fmt.Sprintf("exec proc for %s", ssid))
 					},
 				),
 			}
-			synk.TriggerModal(ttr)
+			m.Root(ttr)
 		})
 		self.reload(context.Background())
-		self.draw()
+		self.drawComponent()
 		return self
 	})
 }

@@ -4,28 +4,28 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Mad-Pixels/wf/internal/ui/binding"
+	"github.com/Mad-Pixels/wf/internal/ui/extension"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
 
 type helper struct {
-	*binding.Synk
+	hotKeys *[]extension.Keys
+	draw    *extension.TriggerDraw
 
-	table   *style.Table
-	hotKeys *[]binding.Keys
+	table *style.Table
 }
 
 func (h *helper) delay() int8 {
 	return 100
 }
 
-func (n *helper) triggerAppDraw() {
-	n.TriggerAppDraw()
+func (n *helper) drawRoot() {
+	n.draw.Root()
 }
 
-func (h *helper) draw() {
+func (h *helper) drawComponent() {
 	if h.hotKeys == nil {
 		return
 	}
@@ -44,15 +44,15 @@ func (h *helper) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(h.table.Object, 0, 1, false)
 }
 
-func Helper(hotKeys *[]binding.Keys, synk *binding.Synk) ComponentInterface {
+func Helper(drawRootTrigger *extension.TriggerDraw, hotKeys *[]extension.Keys) ComponentInterface {
 	return new("helper", func() ComponentInterface {
 		self := &helper{
-			Synk:    synk,
+			draw:    drawRootTrigger,
 			table:   style.NewTable(),
 			hotKeys: hotKeys,
 		}
 		self.reload(context.Background())
-		self.draw()
+		self.drawComponent()
 		return self
 	})
 }

@@ -3,13 +3,14 @@ package component
 import (
 	"context"
 
-	"github.com/Mad-Pixels/wf/internal/ui/binding"
+	"github.com/Mad-Pixels/wf/internal/ui/extension"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
 
 type stdout struct {
-	*binding.Synk
+	draw   *extension.TriggerDraw
+	logger *extension.Logger
 
 	text  *style.Text
 	draft string
@@ -19,11 +20,11 @@ func (s *stdout) delay() int8 {
 	return 1
 }
 
-func (s *stdout) triggerAppDraw() {
-	s.TriggerAppDraw()
+func (s *stdout) drawRoot() {
+	s.draw.Root()
 }
 
-func (s *stdout) draw() {
+func (s *stdout) drawComponent() {
 	s.text.Object.SetScrollable(true).
 		ScrollToEnd().
 		SetDynamicColors(true)
@@ -32,11 +33,11 @@ func (s *stdout) draw() {
 func (s *stdout) reload(ctx context.Context) {
 	for {
 		select {
-		case data := <-s.ReadLog():
+		case data := <-s.logger.LogCh():
 			s.draft += (data + "\n")
 			s.text.Object.SetText(s.draft)
 		default:
-			s.draw()
+			s.drawComponent()
 			return
 		}
 	}
@@ -50,14 +51,15 @@ func (s *stdout) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.text.Object, 0, 1, false)
 }
 
-func StdOut(synk *binding.Synk) ComponentInterface {
+func StdOut(drawRootTrigger *extension.TriggerDraw, logger *extension.Logger) ComponentInterface {
 	return new("stdout", func() ComponentInterface {
 		self := &stdout{
-			Synk: synk,
-			text: style.NewText().AsLogger(),
+			draw:   drawRootTrigger,
+			logger: logger,
+			text:   style.NewText().AsLogger(),
 		}
 		self.reload(context.Background())
-		self.draw()
+		self.drawComponent()
 		return self
 	})
 }
