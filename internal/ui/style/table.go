@@ -17,7 +17,8 @@ type Table struct {
 // NewTable return custom Table object with predifined styles.
 func NewTable() *Table {
 	return &Table{
-		Object: tview.NewTable(),
+		Object: tview.NewTable().
+			ScrollToBeginning(),
 	}
 }
 
@@ -99,6 +100,7 @@ func (t *Table) addCell(r, c int, value string, color tcell.Color) {
 			value,
 		).
 			SetTextColor(color).
-			SetAlign(tview.AlignLeft),
+			SetAlign(tview.AlignLeft).
+			SetExpansion(1),
 	)
 }

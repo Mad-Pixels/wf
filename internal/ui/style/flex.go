@@ -32,6 +32,7 @@ func (f *Flex) WithColumnDirection() *Flex {
 	return f
 }
 
+// AsModal add custom styles for flex.
 func (f *Flex) AsModal(title string) *Flex {
 	f.Object.
 		SetDirection(tview.FlexRow).
