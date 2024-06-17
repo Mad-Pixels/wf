@@ -6,7 +6,7 @@ import (
 
 // Modal ...
 type Modal struct {
-	form *style.Form
+	Form *style.Form
 }
 
 // Content return tview.Flex as a modal object.
@@ -29,6 +29,6 @@ func (m Modal) primitive(title string) *style.Flex {
 	flex := style.
 		NewFlex().
 		AsModal(title)
-	flex.Object.AddItem(m.form.Object, 0, 1, true)
+	flex.Object.AddItem(m.Form.Object, 0, 1, true)
 	return flex
 }

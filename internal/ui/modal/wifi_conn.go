@@ -10,9 +10,8 @@ func NewWiFiConn(ssid string) *Modal {
 	form.Object.
 		AddInputField("SSID:", ssid, 0, nil, nil).
 		AddInputField("Password:", "", 0, nil, nil).
-		AddButton("connect", func() {}).
-		AddButton("cancel", func() {})
+		AddButton("connect", func() {})
 	return &Modal{
-		form: form,
+		Form: form,
 	}
 }
