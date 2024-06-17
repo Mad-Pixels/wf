@@ -1,8 +1,6 @@
 package binding
 
-import (
-	"github.com/rivo/tview"
-)
+import "github.com/Mad-Pixels/wf/internal/ui/form"
 
 type Synk struct {
 	drawCh chan struct{}
@@ -24,7 +22,7 @@ func (s *Synk) TriggerAppDraw() {
 
 type TriggerModalData struct {
 	Title string
-	P     *tview.Form
+	P     *form.Form
 }
 
 func (s *Synk) TriggerModal(tr TriggerModalData) {

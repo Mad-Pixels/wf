@@ -1,6 +1,10 @@
 package style
 
-import "github.com/rivo/tview"
+import (
+	"fmt"
+
+	"github.com/rivo/tview"
+)
 
 // Flex ...
 type Flex struct {
@@ -25,5 +29,17 @@ func (f *Flex) WithRowDirection() *Flex {
 func (f *Flex) WithColumnDirection() *Flex {
 	f.Object.
 		SetDirection(tview.FlexColumn)
+	return f
+}
+
+func (f *Flex) AsModal(title string) *Flex {
+	f.Object.
+		SetDirection(tview.FlexRow).
+		SetTitleColor(ColorTitle).
+		SetTitle(fmt.Sprintf(" %s ", title))
+
+	f.Object.
+		SetBorder(true).
+		SetBorderColor(ColorContent)
 	return f
 }

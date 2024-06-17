@@ -5,6 +5,7 @@ import (
 
 	"github.com/Mad-Pixels/wf/internal/net"
 	"github.com/Mad-Pixels/wf/internal/ui/binding"
+	"github.com/Mad-Pixels/wf/internal/ui/form"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
@@ -77,31 +78,10 @@ func NetScan(synk *binding.Synk) ComponentInterface {
 				AsContent(),
 		}
 		self.table.Object.SetSelectedFunc(func(r, _ int) {
-			p := tview.NewForm().
-				AddInputField("SSID", "", 20, nil, nil).
-				AddInputField("Password", "", 20, nil, nil)
-
-			p.AddButton("Connect", func() {
-				self.PutLog("connect")
-			})
-			p.AddButton("Cancel", func() {
-				self.PutLog("cancel")
-			})
-
-			//content := tview.NewFlex().
-			//	SetDirection(tview.FlexRow).
-			//	AddItem(nil, 0, 1, false).
-			//	AddItem(tview.NewFlex().SetDirection(tview.FlexColumn).
-			//		AddItem(nil, 0, 1, false).
-			//		AddItem(p, 0, 1, true).
-			//		AddItem(nil, 0, 1, false), 0, 1, true).
-			//	AddItem(nil, 0, 1, false)
-
 			ttr := binding.TriggerModalData{
 				Title: "title",
-				P:     p,
+				P:     form.NewWiFiConn(),
 			}
-
 			synk.TriggerModal(ttr)
 		})
 		self.reload(context.Background())
