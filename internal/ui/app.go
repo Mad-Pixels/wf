@@ -7,6 +7,7 @@ import (
 	"github.com/Mad-Pixels/wf/internal/ui/component"
 	"github.com/Mad-Pixels/wf/internal/ui/extension"
 	"github.com/Mad-Pixels/wf/internal/ui/frame"
+	"github.com/Mad-Pixels/wf/internal/ui/modal"
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 )
@@ -27,17 +28,17 @@ func (u *ui) Run() error {
 	return u.app.SetRoot(u.pages, true).Run()
 }
 
-func (u *ui) ShowModal(data extension.ModalData) {
+func (u *ui) ShowModal(data *modal.Modal) {
 	// data.P.Form.Object.AddButton("cancel", func() {
 	// 	u.app.SetRoot(u.pages.ShowPage("main"), true)
 	// })
-	data.M.CloseFunc = func() {
+	data.CloseFunc = func() {
 		u.app.SetRoot(u.pages.ShowPage("main"), true)
 	}
 
 	container := tview.NewPages().
 		AddPage("main", u.pages.ShowPage("main"), true, true).
-		AddPage("modal", data.M.Content("connet").Object, true, true)
+		AddPage("modal", data.Content("connect").Object, true, true)
 
 	u.app.SetRoot(container, true)
 }
@@ -49,7 +50,7 @@ func (u *ui) Draw() {
 func Run() {
 	ctx := context.Background()
 
-	mch := make(chan extension.ModalData, 1)
+	mch := make(chan *modal.Modal, 1)
 	ich := make(chan string, 10)
 
 	ui := NewUI()
@@ -57,7 +58,7 @@ func Run() {
 
 	renderCh := make(chan struct{}, 1)
 	renderTrigger := extension.NewRender(renderCh)
-	modalTr := extension.NewTriggerModal(mch)
+	modalTr := extension.NewView(mch)
 	loggerTr := extension.NewLogger(ich)
 
 	keys := []extension.Keys{

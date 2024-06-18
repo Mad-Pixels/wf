@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/Mad-Pixels/wf/internal/net"
-	"github.com/Mad-Pixels/wf/internal/ui/extension"
 	"github.com/Mad-Pixels/wf/internal/ui/modal"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
@@ -21,7 +20,6 @@ type network interface {
 type netScan struct {
 	LoggerInterface
 	RenderInterface
-	modal *extension.TriggerModal
 
 	table    *style.Table
 	networks []network
@@ -67,30 +65,29 @@ func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.table.Object, 0, 1, true)
 }
 
-func NetScan(render RenderInterface, logger LoggerInterface, m *extension.TriggerModal) ComponentInterface {
+func NetScan(render RenderInterface, logger LoggerInterface, view ViewInterface) ComponentInterface {
 	return new("netscan", func() ComponentInterface {
 		self := &netScan{
 			LoggerInterface: logger,
 			RenderInterface: render,
-			modal:           m,
+
 			table: style.NewTable().
 				WithTitle("networks").
 				WithCount(0).
 				AsContent(),
 		}
 		self.table.Object.SetSelectedFunc(func(r, _ int) {
-			ttr := extension.ModalData{
-				M: modal.NewWiFiConn(
+			view.Open(
+				modal.NewWiFiConn(
 					func() string {
-						r, _ := self.table.Object.GetSelection()
-						return self.networks[r-1].GetSsid()
+						selectedRow, _ := self.table.Object.GetSelection()
+						return self.networks[selectedRow-1].GetSsid()
 					}(),
 					func(ssid string) {
 						self.WriteMsg(fmt.Sprintf("exec proc for %s", ssid))
 					},
 				),
-			}
-			m.Root(ttr)
+			)
 		})
 		self.reload(context.Background())
 		self.renderComponent()

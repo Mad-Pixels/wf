@@ -5,6 +5,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Mad-Pixels/wf/internal/ui/modal"
 	"github.com/rivo/tview"
 )
 
@@ -13,10 +14,15 @@ type RenderInterface interface {
 	DrawRootFrame()
 }
 
-// LoggerWriterInterface defines the interface for application log process.
+// LoggerInterface defines the interface for application log process.
 type LoggerInterface interface {
-	WriteMsg(string)
 	ReadMsg() chan string
+	WriteMsg(string)
+}
+
+// ViewInterface defines the interface for open modal window.
+type ViewInterface interface {
+	Open(*modal.Modal)
 }
 
 // ComponentInterface defines the interface for UI components.
@@ -24,11 +30,11 @@ type ComponentInterface interface {
 	LoggerInterface
 	RenderInterface
 
-	FlexItem(context.Context) *tview.Flex
-
 	reload(context.Context)
 	renderComponent()
 	delay() int8
+
+	FlexItem(context.Context) *tview.Flex
 }
 
 var (

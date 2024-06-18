@@ -5,6 +5,7 @@ type Logger struct {
 	logCh chan string
 }
 
+// NewLogger return Logger object.
 func NewLogger(ch chan string) *Logger {
 	return &Logger{
 		logCh: ch,
