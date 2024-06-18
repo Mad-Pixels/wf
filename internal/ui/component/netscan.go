@@ -19,7 +19,7 @@ type network interface {
 }
 
 type netScan struct {
-	render *extension.Render
+	RenderInterface
 	logger *extension.Logger
 	modal  *extension.TriggerModal
 
@@ -29,10 +29,6 @@ type netScan struct {
 
 func (n *netScan) delay() int8 {
 	return 5
-}
-
-func (n *netScan) renderRoot() {
-	n.render.Root()
 }
 
 func (n *netScan) renderComponent() {
@@ -71,12 +67,12 @@ func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.table.Object, 0, 1, true)
 }
 
-func NetScan(render *extension.Render, logger *extension.Logger, m *extension.TriggerModal) ComponentInterface {
+func NetScan(render RenderInterface, logger *extension.Logger, m *extension.TriggerModal) ComponentInterface {
 	return new("netscan", func() ComponentInterface {
 		self := &netScan{
-			render: render,
-			modal:  m,
-			logger: logger,
+			RenderInterface: render,
+			modal:           m,
+			logger:          logger,
 			table: style.NewTable().
 				WithTitle("networks").
 				WithCount(0).

@@ -9,7 +9,7 @@ import (
 )
 
 type stdout struct {
-	render *extension.Render
+	RenderInterface
 	logger *extension.Logger
 
 	text  *style.Text
@@ -18,10 +18,6 @@ type stdout struct {
 
 func (s *stdout) delay() int8 {
 	return 1
-}
-
-func (s *stdout) renderRoot() {
-	s.render.Root()
 }
 
 func (s *stdout) renderComponent() {
@@ -51,12 +47,12 @@ func (s *stdout) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.text.Object, 0, 1, false)
 }
 
-func StdOut(render *extension.Render, logger *extension.Logger) ComponentInterface {
+func StdOut(render RenderInterface, logger *extension.Logger) ComponentInterface {
 	return new("stdout", func() ComponentInterface {
 		self := &stdout{
-			render: render,
-			logger: logger,
-			text:   style.NewText().AsLogger(),
+			RenderInterface: render,
+			logger:          logger,
+			text:            style.NewText().AsLogger(),
 		}
 		self.reload(context.Background())
 		self.renderComponent()

@@ -11,18 +11,15 @@ import (
 )
 
 type helper struct {
+	RenderInterface
+
 	hotKeys *[]extension.Keys
-	render  *extension.Render
 
 	table *style.Table
 }
 
 func (h *helper) delay() int8 {
 	return 100
-}
-
-func (n *helper) renderRoot() {
-	n.render.Root()
 }
 
 func (h *helper) renderComponent() {
@@ -44,12 +41,12 @@ func (h *helper) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(h.table.Object, 0, 1, false)
 }
 
-func Helper(render *extension.Render, hotKeys *[]extension.Keys) ComponentInterface {
+func Helper(render RenderInterface, hotKeys *[]extension.Keys) ComponentInterface {
 	return new("helper", func() ComponentInterface {
 		self := &helper{
-			render:  render,
-			table:   style.NewTable(),
-			hotKeys: hotKeys,
+			RenderInterface: render,
+			table:           style.NewTable(),
+			hotKeys:         hotKeys,
 		}
 		self.reload(context.Background())
 		self.renderComponent()

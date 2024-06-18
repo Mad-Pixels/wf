@@ -8,13 +8,19 @@ import (
 	"github.com/rivo/tview"
 )
 
+// RenderInterface defines the interface for application frames render process.
+type RenderInterface interface {
+	DrawRootFrame()
+}
+
 // ComponentInterface defines the interface for UI components.
 type ComponentInterface interface {
+	RenderInterface
 	FlexItem(context.Context) *tview.Flex
 
 	reload(context.Context)
 	renderComponent()
-	renderRoot()
+	//	renderRoot()
 	delay() int8
 }
 
@@ -53,7 +59,7 @@ func schedule[T ComponentInterface](ctx context.Context, t T) {
 		select {
 		case <-ticker.C:
 			t.reload(ctx)
-			t.renderRoot()
+			t.DrawRootFrame()
 		case <-ctx.Done():
 			return
 		}

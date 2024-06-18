@@ -11,7 +11,7 @@ import (
 )
 
 type netStat struct {
-	render *extension.Render
+	RenderInterface
 	logger *extension.Logger
 
 	text   *style.Text
@@ -20,10 +20,6 @@ type netStat struct {
 
 func (n *netStat) delay() int8 {
 	return 3
-}
-
-func (n *netStat) renderRoot() {
-	n.render.Root()
 }
 
 func (n *netStat) renderComponent() {
@@ -54,12 +50,12 @@ func (n *netStat) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.text.Object, 0, 1, false)
 }
 
-func NetStat(render *extension.Render, logger *extension.Logger) ComponentInterface {
+func NetStat(render RenderInterface, logger *extension.Logger) ComponentInterface {
 	return new("netstat", func() ComponentInterface {
 		self := &netStat{
-			render: render,
-			logger: logger,
-			text:   style.NewText(),
+			RenderInterface: render,
+			logger:          logger,
+			text:            style.NewText(),
 		}
 		self.reload(context.Background())
 		self.renderComponent()

@@ -12,6 +12,6 @@ func NewRender(ch chan struct{}) *Render {
 }
 
 // Root trigger for refresh application frames.
-func (e Render) Root() {
+func (e Render) DrawRootFrame() {
 	e.triggerCh <- struct{}{}
 }

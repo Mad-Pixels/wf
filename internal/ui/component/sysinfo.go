@@ -12,7 +12,7 @@ import (
 )
 
 type sysInfo struct {
-	render *extension.Render
+	RenderInterface
 	logger *extension.Logger
 
 	usr   string
@@ -22,10 +22,6 @@ type sysInfo struct {
 
 func (s *sysInfo) delay() int8 {
 	return 10
-}
-
-func (n *sysInfo) renderRoot() {
-	n.render.Root()
 }
 
 func (s *sysInfo) renderComponent() {
@@ -66,12 +62,12 @@ func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.table.Object, 0, 1, false)
 }
 
-func SysInfo(render *extension.Render, logger *extension.Logger) ComponentInterface {
+func SysInfo(render RenderInterface, logger *extension.Logger) ComponentInterface {
 	return new("sysinfo", func() ComponentInterface {
 		self := &sysInfo{
-			render: render,
-			logger: logger,
-			table:  style.NewTable(),
+			RenderInterface: render,
+			logger:          logger,
+			table:           style.NewTable(),
 		}
 		self.reload(context.Background())
 		self.renderComponent()
