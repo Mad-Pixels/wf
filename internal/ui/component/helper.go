@@ -12,7 +12,7 @@ import (
 
 type helper struct {
 	hotKeys *[]extension.Keys
-	draw    *extension.TriggerDraw
+	render  *extension.Render
 
 	table *style.Table
 }
@@ -21,11 +21,11 @@ func (h *helper) delay() int8 {
 	return 100
 }
 
-func (n *helper) drawRoot() {
-	n.draw.Root()
+func (n *helper) renderRoot() {
+	n.render.Root()
 }
 
-func (h *helper) drawComponent() {
+func (h *helper) renderComponent() {
 	if h.hotKeys == nil {
 		return
 	}
@@ -44,15 +44,15 @@ func (h *helper) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(h.table.Object, 0, 1, false)
 }
 
-func Helper(drawRootTrigger *extension.TriggerDraw, hotKeys *[]extension.Keys) ComponentInterface {
+func Helper(render *extension.Render, hotKeys *[]extension.Keys) ComponentInterface {
 	return new("helper", func() ComponentInterface {
 		self := &helper{
-			draw:    drawRootTrigger,
+			render:  render,
 			table:   style.NewTable(),
 			hotKeys: hotKeys,
 		}
 		self.reload(context.Background())
-		self.drawComponent()
+		self.renderComponent()
 		return self
 	})
 }

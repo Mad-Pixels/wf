@@ -12,7 +12,7 @@ import (
 )
 
 type sysInfo struct {
-	draw   *extension.TriggerDraw
+	render *extension.Render
 	logger *extension.Logger
 
 	usr   string
@@ -24,11 +24,11 @@ func (s *sysInfo) delay() int8 {
 	return 10
 }
 
-func (n *sysInfo) drawRoot() {
-	n.draw.Root()
+func (n *sysInfo) renderRoot() {
+	n.render.Root()
 }
 
-func (s *sysInfo) drawComponent() {
+func (s *sysInfo) renderComponent() {
 	s.table.AddCellTitle(0, 0, "Version:")
 	s.table.AddCellText(0, 1, wf.Version)
 	s.table.AddCellTitle(1, 0, "OS:")
@@ -42,7 +42,7 @@ func (s *sysInfo) drawComponent() {
 }
 
 func (s *sysInfo) reload(ctx context.Context) {
-	defer s.drawComponent()
+	defer s.renderComponent()
 	var (
 		uid = "n/a"
 		usr = "n/a"
@@ -66,15 +66,15 @@ func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.table.Object, 0, 1, false)
 }
 
-func SysInfo(drawRootTrigger *extension.TriggerDraw, logger *extension.Logger) ComponentInterface {
+func SysInfo(render *extension.Render, logger *extension.Logger) ComponentInterface {
 	return new("sysinfo", func() ComponentInterface {
 		self := &sysInfo{
-			draw:   drawRootTrigger,
+			render: render,
 			logger: logger,
 			table:  style.NewTable(),
 		}
 		self.reload(context.Background())
-		self.drawComponent()
+		self.renderComponent()
 		return self
 	})
 }

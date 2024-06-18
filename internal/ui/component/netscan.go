@@ -19,7 +19,7 @@ type network interface {
 }
 
 type netScan struct {
-	draw   *extension.TriggerDraw
+	render *extension.Render
 	logger *extension.Logger
 	modal  *extension.TriggerModal
 
@@ -31,11 +31,11 @@ func (n *netScan) delay() int8 {
 	return 5
 }
 
-func (n *netScan) drawRoot() {
-	n.draw.Root()
+func (n *netScan) renderRoot() {
+	n.render.Root()
 }
 
-func (n *netScan) drawComponent() {
+func (n *netScan) renderComponent() {
 	n.table.Object.Clear()
 	n.table.AddCellHeader(0, 0, "ssid")
 	n.table.AddCellHeader(0, 1, "freq")
@@ -50,7 +50,7 @@ func (n *netScan) drawComponent() {
 }
 
 func (n *netScan) reload(ctx context.Context) {
-	defer n.drawComponent()
+	defer n.renderComponent()
 	n.networks = []network{}
 
 	result, err := net.NewNetwork().Scan(ctx)
@@ -71,10 +71,10 @@ func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.table.Object, 0, 1, true)
 }
 
-func NetScan(drawRootTrigger *extension.TriggerDraw, logger *extension.Logger, m *extension.TriggerModal) ComponentInterface {
+func NetScan(render *extension.Render, logger *extension.Logger, m *extension.TriggerModal) ComponentInterface {
 	return new("netscan", func() ComponentInterface {
 		self := &netScan{
-			draw:   drawRootTrigger,
+			render: render,
 			modal:  m,
 			logger: logger,
 			table: style.NewTable().
@@ -97,7 +97,7 @@ func NetScan(drawRootTrigger *extension.TriggerDraw, logger *extension.Logger, m
 			m.Root(ttr)
 		})
 		self.reload(context.Background())
-		self.drawComponent()
+		self.renderComponent()
 		return self
 	})
 }

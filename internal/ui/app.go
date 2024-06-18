@@ -49,14 +49,14 @@ func (u *ui) Draw() {
 func Run() {
 	ctx := context.Background()
 
-	cch := make(chan struct{}, 1)
 	mch := make(chan extension.ModalData, 1)
 	ich := make(chan string, 10)
 
 	ui := NewUI()
 	page := frame.NewPage()
 
-	drawTr := extension.NewTriggerDraw(cch)
+	renderCh := make(chan struct{}, 1)
+	renderTrigger := extension.NewRender(renderCh)
 	modalTr := extension.NewTriggerModal(mch)
 	loggerTr := extension.NewLogger(ich)
 
@@ -71,12 +71,12 @@ func Run() {
 		},
 	}
 
-	sysInfo := component.SysInfo(drawTr, loggerTr).FlexItem(ctx)
-	netStat := component.NetStat(drawTr, loggerTr).FlexItem(ctx)
-	helper := component.Helper(drawTr, &keys).FlexItem(ctx)
-	std := component.StdOut(drawTr, loggerTr).FlexItem(ctx)
+	sysInfo := component.SysInfo(renderTrigger, loggerTr).FlexItem(ctx)
+	netStat := component.NetStat(renderTrigger, loggerTr).FlexItem(ctx)
+	helper := component.Helper(renderTrigger, &keys).FlexItem(ctx)
+	std := component.StdOut(renderTrigger, loggerTr).FlexItem(ctx)
 
-	netScan := component.NetScan(drawTr, loggerTr, modalTr)
+	netScan := component.NetScan(renderTrigger, loggerTr, modalTr)
 	info := tview.NewFlex().
 		SetDirection(tview.FlexRow).
 		AddItem(sysInfo, 5, 0, false).
@@ -85,7 +85,7 @@ func Run() {
 	go func() {
 		for {
 			select {
-			case <-cch:
+			case <-renderCh:
 				ui.Draw()
 			case val := <-mch:
 				ui.ShowModal(val)

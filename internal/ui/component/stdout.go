@@ -9,7 +9,7 @@ import (
 )
 
 type stdout struct {
-	draw   *extension.TriggerDraw
+	render *extension.Render
 	logger *extension.Logger
 
 	text  *style.Text
@@ -20,11 +20,11 @@ func (s *stdout) delay() int8 {
 	return 1
 }
 
-func (s *stdout) drawRoot() {
-	s.draw.Root()
+func (s *stdout) renderRoot() {
+	s.render.Root()
 }
 
-func (s *stdout) drawComponent() {
+func (s *stdout) renderComponent() {
 	s.text.Object.SetScrollable(true).
 		ScrollToEnd().
 		SetDynamicColors(true)
@@ -37,7 +37,7 @@ func (s *stdout) reload(ctx context.Context) {
 			s.draft += (data + "\n")
 			s.text.Object.SetText(s.draft)
 		default:
-			s.drawComponent()
+			s.renderComponent()
 			return
 		}
 	}
@@ -51,15 +51,15 @@ func (s *stdout) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.text.Object, 0, 1, false)
 }
 
-func StdOut(drawRootTrigger *extension.TriggerDraw, logger *extension.Logger) ComponentInterface {
+func StdOut(render *extension.Render, logger *extension.Logger) ComponentInterface {
 	return new("stdout", func() ComponentInterface {
 		self := &stdout{
-			draw:   drawRootTrigger,
+			render: render,
 			logger: logger,
 			text:   style.NewText().AsLogger(),
 		}
 		self.reload(context.Background())
-		self.drawComponent()
+		self.renderComponent()
 		return self
 	})
 }

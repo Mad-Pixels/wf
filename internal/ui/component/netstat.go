@@ -11,7 +11,7 @@ import (
 )
 
 type netStat struct {
-	draw   *extension.TriggerDraw
+	render *extension.Render
 	logger *extension.Logger
 
 	text   *style.Text
@@ -22,16 +22,16 @@ func (n *netStat) delay() int8 {
 	return 3
 }
 
-func (n *netStat) drawRoot() {
-	n.draw.Root()
+func (n *netStat) renderRoot() {
+	n.render.Root()
 }
 
-func (n *netStat) drawComponent() {
+func (n *netStat) renderComponent() {
 	n.text.Object.SetText(fmt.Sprintf("\n%s\n", n.status))
 }
 
 func (n *netStat) reload(ctx context.Context) {
-	defer n.drawComponent()
+	defer n.renderComponent()
 
 	var status = "n/a"
 	info, err := net.NewNetwork().Stat(ctx)
@@ -54,15 +54,15 @@ func (n *netStat) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.text.Object, 0, 1, false)
 }
 
-func NetStat(drawRootTrigger *extension.TriggerDraw, logger *extension.Logger) ComponentInterface {
+func NetStat(render *extension.Render, logger *extension.Logger) ComponentInterface {
 	return new("netstat", func() ComponentInterface {
 		self := &netStat{
-			draw:   drawRootTrigger,
+			render: render,
 			logger: logger,
 			text:   style.NewText(),
 		}
 		self.reload(context.Background())
-		self.drawComponent()
+		self.renderComponent()
 		return self
 	})
 }
