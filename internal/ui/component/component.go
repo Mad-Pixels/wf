@@ -16,6 +16,7 @@ type RenderInterface interface {
 // LoggerWriterInterface defines the interface for application log writer process.
 type LoggerWriterInterface interface {
 	WriteMsg(string)
+	ReadMsg() chan string
 }
 
 // ComponentInterface defines the interface for UI components.

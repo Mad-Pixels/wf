@@ -3,7 +3,6 @@ package component
 import (
 	"context"
 
-	"github.com/Mad-Pixels/wf/internal/ui/extension"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
@@ -11,7 +10,6 @@ import (
 type stdout struct {
 	LoggerWriterInterface
 	RenderInterface
-	logger *extension.Logger
 
 	text  *style.Text
 	draft string
@@ -30,7 +28,7 @@ func (s *stdout) renderComponent() {
 func (s *stdout) reload(ctx context.Context) {
 	for {
 		select {
-		case data := <-s.logger.LogCh():
+		case data := <-s.ReadMsg():
 			s.draft += (data + "\n")
 			s.text.Object.SetText(s.draft)
 		default:
@@ -48,12 +46,12 @@ func (s *stdout) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.text.Object, 0, 1, false)
 }
 
-func StdOut(render RenderInterface, logger *extension.Logger) ComponentInterface {
+func StdOut(render RenderInterface, logger LoggerWriterInterface) ComponentInterface {
 	return new("stdout", func() ComponentInterface {
 		self := &stdout{
-			RenderInterface: render,
-			logger:          logger,
-			text:            style.NewText().AsLogger(),
+			RenderInterface:       render,
+			LoggerWriterInterface: logger,
+			text:                  style.NewText().AsLogger(),
 		}
 		self.reload(context.Background())
 		self.renderComponent()

@@ -17,6 +17,6 @@ func (e Logger) WriteMsg(data string) {
 }
 
 // LogCh return channel with log data.
-func (e Logger) LogCh() chan string {
+func (e Logger) ReadMsg() chan string {
 	return e.logCh
 }
