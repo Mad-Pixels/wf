@@ -11,7 +11,7 @@ import (
 )
 
 type sysInfo struct {
-	LoggerWriterInterface
+	LoggerInterface
 	RenderInterface
 
 	usr   string
@@ -61,12 +61,13 @@ func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.table.Object, 0, 1, false)
 }
 
-func SysInfo(render RenderInterface, logger LoggerWriterInterface) ComponentInterface {
+func SysInfo(render RenderInterface, logger LoggerInterface) ComponentInterface {
 	return new("sysinfo", func() ComponentInterface {
 		self := &sysInfo{
-			RenderInterface:       render,
-			LoggerWriterInterface: logger,
-			table:                 style.NewTable(),
+			LoggerInterface: logger,
+			RenderInterface: render,
+
+			table: style.NewTable(),
 		}
 		self.reload(context.Background())
 		self.renderComponent()

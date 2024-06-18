@@ -19,7 +19,7 @@ type network interface {
 }
 
 type netScan struct {
-	LoggerWriterInterface
+	LoggerInterface
 	RenderInterface
 	modal *extension.TriggerModal
 
@@ -67,12 +67,12 @@ func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.table.Object, 0, 1, true)
 }
 
-func NetScan(render RenderInterface, logger LoggerWriterInterface, m *extension.TriggerModal) ComponentInterface {
+func NetScan(render RenderInterface, logger LoggerInterface, m *extension.TriggerModal) ComponentInterface {
 	return new("netscan", func() ComponentInterface {
 		self := &netScan{
-			RenderInterface:       render,
-			modal:                 m,
-			LoggerWriterInterface: logger,
+			LoggerInterface: logger,
+			RenderInterface: render,
+			modal:           m,
 			table: style.NewTable().
 				WithTitle("networks").
 				WithCount(0).

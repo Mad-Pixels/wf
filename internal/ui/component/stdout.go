@@ -8,7 +8,7 @@ import (
 )
 
 type stdout struct {
-	LoggerWriterInterface
+	LoggerInterface
 	RenderInterface
 
 	text  *style.Text
@@ -46,12 +46,13 @@ func (s *stdout) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.text.Object, 0, 1, false)
 }
 
-func StdOut(render RenderInterface, logger LoggerWriterInterface) ComponentInterface {
+func StdOut(render RenderInterface, logger LoggerInterface) ComponentInterface {
 	return new("stdout", func() ComponentInterface {
 		self := &stdout{
-			RenderInterface:       render,
-			LoggerWriterInterface: logger,
-			text:                  style.NewText().AsLogger(),
+			LoggerInterface: logger,
+			RenderInterface: render,
+
+			text: style.NewText().AsLogger(),
 		}
 		self.reload(context.Background())
 		self.renderComponent()
