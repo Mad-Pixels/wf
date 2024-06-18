@@ -19,9 +19,9 @@ type network interface {
 }
 
 type netScan struct {
+	LoggerWriterInterface
 	RenderInterface
-	logger *extension.Logger
-	modal  *extension.TriggerModal
+	modal *extension.TriggerModal
 
 	table    *style.Table
 	networks []network
@@ -51,7 +51,7 @@ func (n *netScan) reload(ctx context.Context) {
 
 	result, err := net.NewNetwork().Scan(ctx)
 	if err != nil {
-		n.logger.Put(err.Error())
+		n.WriteMsg(err.Error())
 		return
 	}
 	for _, item := range result {
@@ -67,12 +67,12 @@ func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.table.Object, 0, 1, true)
 }
 
-func NetScan(render RenderInterface, logger *extension.Logger, m *extension.TriggerModal) ComponentInterface {
+func NetScan(render RenderInterface, logger LoggerWriterInterface, m *extension.TriggerModal) ComponentInterface {
 	return new("netscan", func() ComponentInterface {
 		self := &netScan{
-			RenderInterface: render,
-			modal:           m,
-			logger:          logger,
+			RenderInterface:       render,
+			modal:                 m,
+			LoggerWriterInterface: logger,
 			table: style.NewTable().
 				WithTitle("networks").
 				WithCount(0).
@@ -86,7 +86,7 @@ func NetScan(render RenderInterface, logger *extension.Logger, m *extension.Trig
 						return self.networks[r-1].GetSsid()
 					}(),
 					func(ssid string) {
-						self.logger.Put(fmt.Sprintf("exec proc for %s", ssid))
+						self.WriteMsg(fmt.Sprintf("exec proc for %s", ssid))
 					},
 				),
 			}

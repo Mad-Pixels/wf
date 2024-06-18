@@ -9,6 +9,7 @@ import (
 )
 
 type stdout struct {
+	LoggerWriterInterface
 	RenderInterface
 	logger *extension.Logger
 

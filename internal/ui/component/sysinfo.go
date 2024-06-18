@@ -6,14 +6,13 @@ import (
 	"runtime"
 
 	"github.com/Mad-Pixels/wf"
-	"github.com/Mad-Pixels/wf/internal/ui/extension"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
 
 type sysInfo struct {
+	LoggerWriterInterface
 	RenderInterface
-	logger *extension.Logger
 
 	usr   string
 	uid   string
@@ -45,7 +44,7 @@ func (s *sysInfo) reload(ctx context.Context) {
 	)
 	info, err := user.Current()
 	if err != nil {
-		s.logger.Put(err.Error())
+		s.WriteMsg(err.Error())
 		s.usr = usr
 		s.uid = uid
 		return
@@ -62,12 +61,12 @@ func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.table.Object, 0, 1, false)
 }
 
-func SysInfo(render RenderInterface, logger *extension.Logger) ComponentInterface {
+func SysInfo(render RenderInterface, logger LoggerWriterInterface) ComponentInterface {
 	return new("sysinfo", func() ComponentInterface {
 		self := &sysInfo{
-			RenderInterface: render,
-			logger:          logger,
-			table:           style.NewTable(),
+			RenderInterface:       render,
+			LoggerWriterInterface: logger,
+			table:                 style.NewTable(),
 		}
 		self.reload(context.Background())
 		self.renderComponent()

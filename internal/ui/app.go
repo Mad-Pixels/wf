@@ -73,7 +73,7 @@ func Run() {
 
 	sysInfo := component.SysInfo(renderTrigger, loggerTr).FlexItem(ctx)
 	netStat := component.NetStat(renderTrigger, loggerTr).FlexItem(ctx)
-	helper := component.Helper(renderTrigger, &keys).FlexItem(ctx)
+	helper := component.Helper(renderTrigger, loggerTr, &keys).FlexItem(ctx)
 	std := component.StdOut(renderTrigger, loggerTr).FlexItem(ctx)
 
 	netScan := component.NetScan(renderTrigger, loggerTr, modalTr)

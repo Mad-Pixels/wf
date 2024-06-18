@@ -13,8 +13,14 @@ type RenderInterface interface {
 	DrawRootFrame()
 }
 
+// LoggerWriterInterface defines the interface for application log writer process.
+type LoggerWriterInterface interface {
+	WriteMsg(string)
+}
+
 // ComponentInterface defines the interface for UI components.
 type ComponentInterface interface {
+	LoggerWriterInterface
 	RenderInterface
 	FlexItem(context.Context) *tview.Flex
 

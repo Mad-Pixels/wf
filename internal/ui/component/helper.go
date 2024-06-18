@@ -11,6 +11,7 @@ import (
 )
 
 type helper struct {
+	LoggerWriterInterface
 	RenderInterface
 
 	hotKeys *[]extension.Keys
@@ -41,12 +42,13 @@ func (h *helper) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(h.table.Object, 0, 1, false)
 }
 
-func Helper(render RenderInterface, hotKeys *[]extension.Keys) ComponentInterface {
+func Helper(render RenderInterface, logger LoggerWriterInterface, hotKeys *[]extension.Keys) ComponentInterface {
 	return new("helper", func() ComponentInterface {
 		self := &helper{
-			RenderInterface: render,
-			table:           style.NewTable(),
-			hotKeys:         hotKeys,
+			LoggerWriterInterface: logger,
+			RenderInterface:       render,
+			table:                 style.NewTable(),
+			hotKeys:               hotKeys,
 		}
 		self.reload(context.Background())
 		self.renderComponent()

@@ -12,7 +12,7 @@ func NewLogger(ch chan string) *Logger {
 }
 
 // Put log data.
-func (e Logger) Put(data string) {
+func (e Logger) WriteMsg(data string) {
 	e.logCh <- data
 }
 

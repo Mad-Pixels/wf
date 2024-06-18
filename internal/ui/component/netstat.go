@@ -5,14 +5,13 @@ import (
 	"fmt"
 
 	"github.com/Mad-Pixels/wf/internal/net"
-	"github.com/Mad-Pixels/wf/internal/ui/extension"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
 
 type netStat struct {
+	LoggerWriterInterface
 	RenderInterface
-	logger *extension.Logger
 
 	text   *style.Text
 	status string
@@ -33,7 +32,7 @@ func (n *netStat) reload(ctx context.Context) {
 	info, err := net.NewNetwork().Stat(ctx)
 	switch {
 	case err != nil:
-		n.logger.Put(err.Error())
+		n.WriteMsg(err.Error())
 	case info == nil:
 		status = "no active connection"
 	default:
@@ -50,12 +49,12 @@ func (n *netStat) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.text.Object, 0, 1, false)
 }
 
-func NetStat(render RenderInterface, logger *extension.Logger) ComponentInterface {
+func NetStat(render RenderInterface, logger LoggerWriterInterface) ComponentInterface {
 	return new("netstat", func() ComponentInterface {
 		self := &netStat{
-			RenderInterface: render,
-			logger:          logger,
-			text:            style.NewText(),
+			LoggerWriterInterface: logger,
+			RenderInterface:       render,
+			text:                  style.NewText(),
 		}
 		self.reload(context.Background())
 		self.renderComponent()
