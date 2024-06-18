@@ -84,6 +84,10 @@ func NetScan(render RenderInterface, logger LoggerInterface, view ViewInterface)
 						return self.networks[selectedRow-1].GetSsid()
 					}(),
 					func(ssid string) {
+						err := net.NewNetwork().Conn(context.Background(), ssid, "Tislam55")
+						if err != nil {
+							self.WriteMsg(err.Error())
+						}
 						self.WriteMsg(fmt.Sprintf("exec proc for %s", ssid))
 					},
 				),
