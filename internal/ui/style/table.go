@@ -10,8 +10,9 @@ import (
 
 // Table ...
 type Table struct {
-	Object *tview.Table
-	title  string
+	Object    *tview.Table
+	title     string
+	expansion bool
 }
 
 // NewTable return custom Table object with predifined styles.
@@ -28,6 +29,12 @@ func (t *Table) WithTitle(title string) *Table {
 	t.Object.
 		SetTitle(fmt.Sprintf(" %s ", t.title)).
 		SetTitleColor(ColorTitle)
+	return t
+}
+
+// WithExpansion set width: 100%.
+func (t *Table) WithExpansion() *Table {
+	t.expansion = true
 	return t
 }
 
@@ -79,28 +86,24 @@ func (t *Table) AddCellText(r, c int, value string) {
 
 // AddCellHeader add item [row, col] as table Header.
 func (t *Table) AddCellHeader(r, c int, value string) {
-	t.Object.SetCell(
-		r,
-		c,
-		tview.NewTableCell(
-			strings.ToUpper(value),
-		).
-			SetAlign(tview.AlignLeft).
-			SetTextColor(ColorTitle).
-			SetSelectable(false).
-			SetExpansion(1),
-	)
+	cell := tview.NewTableCell(strings.ToUpper(value)).
+		SetAlign(tview.AlignLeft).
+		SetTextColor(ColorTitle).
+		SetSelectable(false)
+	if t.expansion {
+		cell.SetExpansion(1)
+	}
+
+	t.Object.SetCell(r, c, cell)
 }
 
 func (t *Table) addCell(r, c int, value string, color tcell.Color) {
-	t.Object.SetCell(
-		r,
-		c,
-		tview.NewTableCell(
-			value,
-		).
-			SetTextColor(color).
-			SetAlign(tview.AlignLeft).
-			SetExpansion(1),
-	)
+	cell := tview.NewTableCell(value).
+		SetAlign(tview.AlignLeft).
+		SetTextColor(color)
+	if t.expansion {
+		cell.SetExpansion(1)
+	}
+
+	t.Object.SetCell(r, c, cell)
 }

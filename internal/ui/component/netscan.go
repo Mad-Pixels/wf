@@ -73,6 +73,7 @@ func NetScan(render RenderInterface, logger LoggerInterface, view ViewInterface)
 
 			table: style.NewTable().
 				WithTitle("networks").
+				WithExpansion().
 				WithCount(0).
 				AsContent(),
 		}
