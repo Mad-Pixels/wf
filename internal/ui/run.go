@@ -30,6 +30,14 @@ func Run(ctx context.Context) error {
 					ui.app.Stop()
 				},
 			},
+			{
+				Description: "go to main view",
+				Shortcut:    tcell.KeyESC,
+
+				Action: func(ctx context.Context) {
+					ui.app.SetRoot(ui.pages.ShowPage("main"), true)
+				},
+			},
 		}
 
 		chView   = make(chan *modal.Modal, 1)
