@@ -41,7 +41,7 @@ func (h *helper) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(h.table.Object, 0, 1, false)
 }
 
-func Helper(render RenderInterface, logger LoggerInterface, hotKeys *[]extension.Keys) ComponentInterface {
+func Helper[R RenderInterface, L LoggerInterface](render R, logger L, hotKeys *[]extension.Keys) ComponentInterface {
 	return new("helper", func() ComponentInterface {
 		self := &helper{
 			LoggerInterface: logger,

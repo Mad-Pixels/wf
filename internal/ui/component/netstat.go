@@ -49,7 +49,7 @@ func (n *netStat) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.text.Object, 0, 1, false)
 }
 
-func NetStat(render RenderInterface, logger LoggerInterface) ComponentInterface {
+func NetStat[R RenderInterface, L LoggerInterface](render R, logger L) ComponentInterface {
 	return new("netstat", func() ComponentInterface {
 		self := &netStat{
 			LoggerInterface: logger,

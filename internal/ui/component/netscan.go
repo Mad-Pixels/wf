@@ -65,7 +65,7 @@ func (n *netScan) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(n.table.Object, 0, 1, true)
 }
 
-func NetScan(render RenderInterface, logger LoggerInterface, view ViewInterface) ComponentInterface {
+func NetScan[R RenderInterface, L LoggerInterface, V ViewInterface](render R, logger L, view V) ComponentInterface {
 	return new("netscan", func() ComponentInterface {
 		self := &netScan{
 			LoggerInterface: logger,

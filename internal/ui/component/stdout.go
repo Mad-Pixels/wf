@@ -46,7 +46,7 @@ func (s *stdout) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.text.Object, 0, 1, false)
 }
 
-func StdOut(render RenderInterface, logger LoggerInterface) ComponentInterface {
+func StdOut[R RenderInterface, L LoggerInterface](render R, logger L) ComponentInterface {
 	return new("stdout", func() ComponentInterface {
 		self := &stdout{
 			LoggerInterface: logger,

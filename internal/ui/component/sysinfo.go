@@ -61,7 +61,7 @@ func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {
 		AddItem(s.table.Object, 0, 1, false)
 }
 
-func SysInfo(render RenderInterface, logger LoggerInterface) ComponentInterface {
+func SysInfo[R RenderInterface, L LoggerInterface](render R, logger L) ComponentInterface {
 	return new("sysinfo", func() ComponentInterface {
 		self := &sysInfo{
 			LoggerInterface: logger,
