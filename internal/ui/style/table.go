@@ -38,6 +38,12 @@ func (t *Table) WithExpansion() *Table {
 	return t
 }
 
+// WithFixedHeader make first row fixed.
+func (t *Table) WithFixedHeader() *Table {
+	t.Object.SetFixed(1, 0)
+	return t
+}
+
 // WithCount add to table title count of rows.
 func (t *Table) WithCount(count int) *Table {
 	switch {
