@@ -11,4 +11,6 @@ const (
 	ColorPrimary   = tcell.ColorDeepSkyBlue
 	ColorSecondary = tcell.ColorDarkGray
 	ColorContent   = tcell.ColorLightSkyBlue
+	ColorBlack     = tcell.ColorBlack
+	ColorDark      = tcell.ColorDarkSlateGray
 )

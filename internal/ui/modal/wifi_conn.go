@@ -9,7 +9,7 @@ import (
 func NewWiFiConn(ssid string, conn func(ssid string)) *Modal {
 	var (
 		ssidField = "SSID:"
-		passField = "password:"
+		passField = "Password:"
 
 		connectBtn = "connect"
 		cancelBtn  = "cancel"
@@ -31,6 +31,11 @@ func NewWiFiConn(ssid string, conn func(ssid string)) *Modal {
 			conn(form.Object.GetFormItemByLabel(ssidField).(*tview.InputField).GetText())
 		}).
 		AddButton(cancelBtn, func() { modal.CloseFunc() })
+	form.Object.
+		SetButtonBackgroundColor(style.ColorDark).
+		SetFieldBackgroundColor(style.ColorDark).
+		SetFieldTextColor(style.ColorText).
+		SetLabelColor(style.ColorText)
 	modal.form = form
 	return modal
 }
