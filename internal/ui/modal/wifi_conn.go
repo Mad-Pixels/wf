@@ -14,7 +14,12 @@ func NewWiFiConn(ssid string, conn func(ssid string)) *Modal {
 		connectBtn = "connect"
 		cancelBtn  = "cancel"
 	)
-	modal := &Modal{CloseFunc: func() {}}
+	modal := &Modal{
+		title:  "connect to WiFi",
+		height: 9,
+
+		CloseFunc: func() {},
+	}
 
 	form := style.NewForm()
 	form.Object.

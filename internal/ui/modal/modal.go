@@ -8,18 +8,20 @@ import (
 type Modal struct {
 	form      *style.Form
 	CloseFunc func()
+	title     string
+	height    int
 }
 
 // Content return tview.Flex as a modal object.
-func (m Modal) Content(title string) *style.Flex {
+func (m Modal) Content() *style.Flex {
 	flex := style.NewFlex()
 	flex.Object.
 		AddItem(nil, 0, 1, false).
 		AddItem(
 			style.NewFlex().WithRowDirection().Object.
-				AddItem(nil, 0, 2, false).
-				AddItem(m.primitive(title).Object, 0, 1, true).
-				AddItem(nil, 0, 2, false),
+				AddItem(nil, 0, 1, false).
+				AddItem(m.primitive(m.title).Object, m.height, 0, true).
+				AddItem(nil, 0, 1, false),
 			0, 2, true,
 		).
 		AddItem(nil, 0, 1, false)

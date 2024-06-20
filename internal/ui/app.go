@@ -28,7 +28,7 @@ func (u *ui) ShowModal(data *modal.Modal) {
 
 	container := tview.NewPages().
 		AddPage("main", u.pages.ShowPage("main"), true, true).
-		AddPage("modal", data.Content("modal").Object, true, true)
+		AddPage("modal", data.Content().Object, true, true)
 
 	u.app.SetRoot(container, true)
 }
