@@ -24,7 +24,7 @@ func NewWiFiConn(ssid string, conn func(ssid string)) *Modal {
 	form := style.NewForm()
 	form.Object.
 		AddInputField(ssidField, ssid, 0, nil, nil).
-		AddInputField(passField, "", 0, nil, nil)
+		AddPasswordField(passField, "", 0, '*', nil)
 	form.Object.
 		AddButton(connectBtn, func() {
 			defer modal.CloseFunc()
