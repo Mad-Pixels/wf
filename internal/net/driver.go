@@ -1,6 +1,9 @@
 package net
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 type Driver interface {
 	Scan(context.Context) ([]network, error)
@@ -9,10 +12,14 @@ type Driver interface {
 }
 
 type network struct {
-	ssid    string
-	freq    string
-	level   string
-	quality string
+	bssid    string
+	ssid     string
+	mode     string
+	channel  uint32
+	rate     string
+	signal   uint8
+	bars     string
+	security string
 }
 
 type Network struct{}
@@ -33,20 +40,36 @@ func (n Network) Conn(ctx context.Context, ssid, password string) error {
 	return conn(ssid, password)
 }
 
+func (n network) GetBssid() string {
+	return n.bssid
+}
+
 func (n network) GetSsid() string {
 	return n.ssid
 }
 
-func (n network) GetFreq() string {
-	return n.freq
+func (n network) GetMode() string {
+	return n.mode
 }
 
-func (n network) GetLevel() string {
-	return n.level
+func (n network) GetChannel() string {
+	return fmt.Sprintf("%d", n.channel)
 }
 
-func (n network) GetQuality() string {
-	return n.quality
+func (n network) GetRate() string {
+	return n.rate
+}
+
+func (n network) GetSignal() string {
+	return fmt.Sprintf("%d", n.signal)
+}
+
+func (n network) GetBars() string {
+	return fmt.Sprintf("%v", n.bars)
+}
+
+func (n network) GetSecurity() string {
+	return n.security
 }
 
 // ---

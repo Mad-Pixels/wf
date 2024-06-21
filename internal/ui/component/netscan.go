@@ -12,9 +12,18 @@ import (
 
 // external network object data implementation.
 type network interface {
+	GetBssid() string
 	GetSsid() string
-	GetFreq() string
-	GetLevel() string
+	GetMode() string
+	GetChannel() string
+	GetRate() string
+	GetSignal() string
+	GetBars() string
+	GetSecurity() string
+
+	// GetFreq() string
+	// GetLevel() string
+	// GetMac() string
 }
 
 type netScan struct {
@@ -31,14 +40,24 @@ func (n *netScan) delay() int8 {
 
 func (n *netScan) renderComponent() {
 	n.table.Object.Clear()
-	n.table.AddCellHeader(0, 0, "ssid")
-	n.table.AddCellHeader(0, 1, "freq")
-	n.table.AddCellHeader(0, 2, "level")
+	n.table.AddCellHeader(0, 0, "bssid")
+	n.table.AddCellHeader(0, 1, "ssid")
+	n.table.AddCellHeader(0, 2, "mode")
+	n.table.AddCellHeader(0, 3, "channel")
+	n.table.AddCellHeader(0, 4, "rate")
+	n.table.AddCellHeader(0, 5, "signal")
+	n.table.AddCellHeader(0, 6, "bars")
+	n.table.AddCellHeader(0, 7, "security")
 
 	for row, network := range n.networks {
-		n.table.AddCellContent(row+1, 0, network.GetSsid())
-		n.table.AddCellContent(row+1, 1, network.GetFreq())
-		n.table.AddCellContent(row+1, 2, network.GetLevel())
+		n.table.AddCellContent(row+1, 0, network.GetBssid())
+		n.table.AddCellContent(row+1, 1, network.GetSsid())
+		n.table.AddCellContent(row+1, 2, network.GetMode())
+		n.table.AddCellContent(row+1, 3, network.GetChannel())
+		n.table.AddCellContent(row+1, 4, network.GetRate())
+		n.table.AddCellContent(row+1, 5, network.GetSignal())
+		n.table.AddCellContent(row+1, 6, network.GetBars())
+		n.table.AddCellContent(row+1, 7, network.GetSecurity())
 	}
 	n.table.WithCount(len(n.networks))
 }

@@ -25,10 +25,9 @@ func stat() (*network, error) {
 
 func randomNetwork() network {
 	return network{
-		ssid:    randomString(5),
-		freq:    randomString(4),
-		level:   randomString(6),
-		quality: randomString(8),
+		ssid: randomString(5),
+		// freq:  randomString(4),
+		// level: randomString(6),
 	}
 }
 
