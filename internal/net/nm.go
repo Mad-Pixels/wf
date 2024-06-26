@@ -49,15 +49,15 @@ func (ap accessPoint) GetFreq() uint32 {
 	}
 }
 
-func (ap accessPoint) MaxBitrate() uint32 {
+func (ap accessPoint) GetMaxBitrate() uint32 {
 	return ap.maxBitrate
 }
 
-func (ap accessPoint) MacAddr() string {
+func (ap accessPoint) GetMacAddr() string {
 	return ap.hwAddress
 }
 
-func (ap accessPoint) SecType() string {
+func (ap accessPoint) GetSecType() string {
 	if ap.rsnFlags != 0 {
 		return "WPA2"
 	}

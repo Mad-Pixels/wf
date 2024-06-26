@@ -11,7 +11,23 @@ type Driver interface {
 	Conn(ctx context.Context, ssid, password string) error
 }
 
-type AccessPoint interface{}
+type AccessPoint interface {
+	GetSsid() string
+	GetQuality() uint8
+	GetFreq() uint32
+	GetMaxBitrate() uint32
+	GetMacAddr() string
+	GetSecType() string
+}
+
+func Items() ([]AccessPoint, error) {
+	n, err := NewDbusNm()
+	if err != nil {
+		return nil, err
+	}
+	return n.WirelessAccessPoints()
+
+}
 
 type network struct {
 	bssid    string
