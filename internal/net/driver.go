@@ -11,6 +11,8 @@ type Driver interface {
 	Conn(ctx context.Context, ssid, password string) error
 }
 
+type AccessPoint interface{}
+
 type network struct {
 	bssid    string
 	ssid     string
