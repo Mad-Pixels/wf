@@ -30,6 +30,46 @@ type accessPoint struct {
 	mode       string
 }
 
+func (ap accessPoint) GetSsid() string {
+	return ap.ssid
+}
+
+func (ap accessPoint) GetQuality() uint8 {
+	return ap.strength
+}
+
+func (ap accessPoint) GetFreq() uint32 {
+	switch {
+	case ap.frequency >= 2412 && ap.frequency <= 2484:
+		return (ap.frequency - 2407) / 5
+	case ap.frequency >= 5170 && ap.frequency <= 5825:
+		return (ap.frequency - 5000) / 5
+	default:
+		return 0
+	}
+}
+
+func (ap accessPoint) MaxBitrate() uint32 {
+	return ap.maxBitrate
+}
+
+func (ap accessPoint) MacAddr() string {
+	return ap.hwAddress
+}
+
+func (ap accessPoint) SecType() string {
+	if ap.rsnFlags != 0 {
+		return "WPA2"
+	}
+	if ap.wpaFlags != 0 {
+		return "WPA"
+	}
+	if ap.flags&0x1 != 0 {
+		return "WEP"
+	}
+	return "OPEN"
+}
+
 type dbusNm struct {
 	conn *dbus.Conn
 
