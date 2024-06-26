@@ -15,7 +15,7 @@ type stdout struct {
 	draft string
 }
 
-func (s *stdout) delay() int8 {
+func (s *stdout) delay() uint8 {
 	return 1
 }
 

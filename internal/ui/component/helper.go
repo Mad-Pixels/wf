@@ -18,8 +18,8 @@ type helper struct {
 	table   *style.Table
 }
 
-func (h *helper) delay() int8 {
-	return 100
+func (h *helper) delay() uint8 {
+	return 254
 }
 
 func (h *helper) renderComponent() {

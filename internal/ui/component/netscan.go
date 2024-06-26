@@ -29,8 +29,8 @@ type netScan struct {
 	networks []network
 }
 
-func (n *netScan) delay() int8 {
-	return 2
+func (n *netScan) delay() uint8 {
+	return 7
 }
 
 func (n *netScan) renderComponent() {

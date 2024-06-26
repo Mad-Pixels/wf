@@ -19,8 +19,8 @@ type sysInfo struct {
 	table *style.Table
 }
 
-func (s *sysInfo) delay() int8 {
-	return 10
+func (s *sysInfo) delay() uint8 {
+	return 254
 }
 
 func (s *sysInfo) renderComponent() {

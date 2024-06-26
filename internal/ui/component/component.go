@@ -32,7 +32,7 @@ type ComponentInterface interface {
 
 	reload(context.Context)
 	renderComponent()
-	delay() int8
+	delay() uint8
 
 	FlexItem(context.Context) *tview.Flex
 }

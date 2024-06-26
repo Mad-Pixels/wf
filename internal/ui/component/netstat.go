@@ -17,8 +17,8 @@ type netStat struct {
 	status string
 }
 
-func (n *netStat) delay() int8 {
-	return 3
+func (n *netStat) delay() uint8 {
+	return 5
 }
 
 func (n *netStat) renderComponent() {
