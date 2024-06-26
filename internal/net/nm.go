@@ -267,7 +267,11 @@ func (ap dbusObjAp) AccessPointAsync() (AccessPoint, error) {
 func (ap dbusObjAp) ssid() (string, error) {
 	var val []byte
 
-	if err := ap.store("Ssid", val); err != nil {
+	//if err := ap.store("Ssid", val); err != nil {
+	//	return "", err
+	//}
+	err := ap.object.Call(nmPropGet, 0, nmDestWirelessAccessPoint, "Ssid").Store(&val)
+	if err != nil {
 		return "", err
 	}
 	return string(val), nil
@@ -276,7 +280,11 @@ func (ap dbusObjAp) ssid() (string, error) {
 func (ap dbusObjAp) strength() (uint8, error) {
 	var val uint8
 
-	if err := ap.store("Strength", val); err != nil {
+	//if err := ap.store("Strength", val); err != nil {
+	//	return 0, err
+	//}
+	err := ap.object.Call(nmPropGet, 0, nmDestWirelessAccessPoint, "Strength").Store(&val)
+	if err != nil {
 		return 0, err
 	}
 	return val, nil
@@ -285,7 +293,11 @@ func (ap dbusObjAp) strength() (uint8, error) {
 func (ap dbusObjAp) frequency() (uint32, error) {
 	var val uint32
 
-	if err := ap.store("Frequency", val); err != nil {
+	//if err := ap.store("Frequency", val); err != nil {
+	//	return 0, err
+	//}
+	err := ap.object.Call(nmPropGet, 0, nmDestWirelessAccessPoint, "Frequency").Store(&val)
+	if err != nil {
 		return 0, err
 	}
 	return val, nil
@@ -294,7 +306,11 @@ func (ap dbusObjAp) frequency() (uint32, error) {
 func (ap dbusObjAp) hwAddress() (string, error) {
 	var val string
 
-	if err := ap.store("HwAddress", val); err != nil {
+	//if err := ap.store("HwAddress", val); err != nil {
+	//	return "", err
+	//}
+	err := ap.object.Call(nmPropGet, 0, nmDestWirelessAccessPoint, "HwAddress").Store(&val)
+	if err != nil {
 		return "", err
 	}
 	return val, nil
@@ -303,7 +319,11 @@ func (ap dbusObjAp) hwAddress() (string, error) {
 func (ap dbusObjAp) mode() (string, error) {
 	var val string
 
-	if err := ap.store("Mode", val); err != nil {
+	//if err := ap.store("Mode", val); err != nil {
+	//	return "", err
+	//}
+	err := ap.object.Call(nmPropGet, 0, nmDestWirelessAccessPoint, "Mode").Store(&val)
+	if err != nil {
 		return "", err
 	}
 	return val, nil
@@ -312,7 +332,11 @@ func (ap dbusObjAp) mode() (string, error) {
 func (ap dbusObjAp) maxBitrate() (uint32, error) {
 	var val uint32
 
-	if err := ap.store("MaxBitrate", val); err != nil {
+	//if err := ap.store("MaxBitrate", val); err != nil {
+	//	return 0, err
+	//}
+	err := ap.object.Call(nmPropGet, 0, nmDestWirelessAccessPoint, "MaxBitrate").Store(&val)
+	if err != nil {
 		return 0, err
 	}
 	return val, nil
@@ -321,7 +345,11 @@ func (ap dbusObjAp) maxBitrate() (uint32, error) {
 func (ap dbusObjAp) flags() (uint32, error) {
 	var val uint32
 
-	if err := ap.store("Flags", val); err != nil {
+	//if err := ap.store("Flags", val); err != nil {
+	//	return 0, err
+	//}
+	err := ap.object.Call(nmPropGet, 0, nmDestWirelessAccessPoint, "Flags").Store(&val)
+	if err != nil {
 		return 0, err
 	}
 	return val, nil
@@ -330,7 +358,11 @@ func (ap dbusObjAp) flags() (uint32, error) {
 func (ap dbusObjAp) wpaFlags() (uint32, error) {
 	var val uint32
 
-	if err := ap.store("WpaFlags", val); err != nil {
+	//if err := ap.store("WpaFlags", val); err != nil {
+	//	return 0, err
+	//}
+	err := ap.object.Call(nmPropGet, 0, nmDestWirelessAccessPoint, "WpaFlags").Store(&val)
+	if err != nil {
 		return 0, err
 	}
 	return val, nil
@@ -339,7 +371,11 @@ func (ap dbusObjAp) wpaFlags() (uint32, error) {
 func (ap dbusObjAp) rsnFlags() (uint32, error) {
 	var val uint32
 
-	if err := ap.store("RsnFlags", val); err != nil {
+	//if err := ap.store("RsnFlags", val); err != nil {
+	//	return 0, err
+	//}
+	err := ap.object.Call(nmPropGet, 0, nmDestWirelessAccessPoint, "RsnFlags").Store(&val)
+	if err != nil {
 		return 0, err
 	}
 	return val, nil

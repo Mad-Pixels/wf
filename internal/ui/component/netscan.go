@@ -54,12 +54,12 @@ func (n *netScan) renderComponent() {
 	n.table.AddCellHeader(0, 5, "sectype")
 
 	for row, network := range n.networks {
-		n.table.AddCellContent(row+1, 1, network.GetSsid())
-		n.table.AddCellContent(row+1, 2, fmt.Sprintf("%d", network.GetQuality()))
-		n.table.AddCellContent(row+1, 3, fmt.Sprintf("%d", network.GetFreq()))
-		n.table.AddCellContent(row+1, 4, fmt.Sprintf("%d", network.GetMaxBitrate()))
-		n.table.AddCellContent(row+1, 5, network.GetMacAddr())
-		n.table.AddCellContent(row+1, 6, network.GetSecType())
+		n.table.AddCellContent(row+1, 0, network.GetSsid())
+		n.table.AddCellContent(row+1, 1, fmt.Sprintf("%d", network.GetQuality()))
+		n.table.AddCellContent(row+1, 2, fmt.Sprintf("%d", network.GetFreq()))
+		n.table.AddCellContent(row+1, 3, fmt.Sprintf("%d", network.GetMaxBitrate()))
+		n.table.AddCellContent(row+1, 4, network.GetMacAddr())
+		n.table.AddCellContent(row+1, 5, network.GetSecType())
 	}
 	n.table.WithCount(len(n.networks))
 }
