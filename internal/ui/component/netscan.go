@@ -19,18 +19,6 @@ type network interface {
 	GetQuality() string
 	GetFreq() string
 	GetSsid() string
-	// GetBssid() string
-	// GetSsid() string
-	// GetMode() string
-	// GetChannel() string
-	// GetRate() string
-	// GetSignal() string
-	// GetBars() string
-	// GetSecurity() string
-
-	// GetFreq() string
-	// GetLevel() string
-	// GetMac() string
 }
 
 type netScan struct {
@@ -73,11 +61,6 @@ func (n *netScan) reload(ctx context.Context) {
 	n.networks = []network{}
 	n.WriteMsg("reload")
 
-	// result, err := net.NewNetwork().Scan(ctx)
-	// if err != nil {
-	// 	n.WriteMsg(err.Error())
-	// 	return
-	// }
 	result, err := net.Items()
 	if err != nil {
 		n.WriteMsg(err.Error())
