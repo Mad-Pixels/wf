@@ -41,7 +41,7 @@ type netScan struct {
 }
 
 func (n *netScan) delay() int8 {
-	return 5
+	return 2
 }
 
 func (n *netScan) renderComponent() {
@@ -67,6 +67,7 @@ func (n *netScan) renderComponent() {
 func (n *netScan) reload(ctx context.Context) {
 	defer n.renderComponent()
 	n.networks = []network{}
+	n.WriteMsg("reload")
 
 	// result, err := net.NewNetwork().Scan(ctx)
 	// if err != nil {
