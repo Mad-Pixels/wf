@@ -79,10 +79,12 @@ func NewDbusNm() (*dbusNm, error) {
 	}, nil
 }
 
-func (nm dbusNm) WirelessAccessPoints() (interface{}, error) {
-	var apPaths []dbus.ObjectPath
+func (nm dbusNm) WirelessAccessPoints() ([]AccessPoint, error) {
+	apList := []AccessPoint{}
 
 	for _, device := range nm.devicesWireless {
+		var apPaths []dbus.ObjectPath
+
 		if err := device.
 			Call(nmDestWirelessAccessPoints, 0).
 			Store(&apPaths); err != nil {
@@ -90,19 +92,24 @@ func (nm dbusNm) WirelessAccessPoints() (interface{}, error) {
 		}
 
 		for _, apPath := range apPaths {
-			apObject := dbusObjAp{object: nm.conn.Object(nmDest, apPath)} //newDbusObjAp(nm.conn, apPath)
-
+			apObject, err := dbusObjAp{
+				object: nm.conn.Object(nmDest, apPath),
+			}.AccessPoint()
+			if err != nil {
+				return nil, err
+			}
+			apList = append(apList, apObject)
 		}
-
 	}
-	return nil, nil
+
+	return apList, nil
 }
 
 type dbusObjAp struct {
 	object dbus.BusObject
 }
 
-func (ap dbusObjAp) AccessPoint() (AccessPoint, error) {
+func (ap dbusObjAp) AccessPoint() (*accessPoint, error) {
 	ssid, err := ap.ssid()
 	if err != nil {
 		return nil, err
