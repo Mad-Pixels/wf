@@ -6,19 +6,25 @@ import (
 )
 
 type Driver interface {
+	Conn(context.Context, string, string) error
 	Scan(context.Context) ([]network, error)
 	Stat(context.Context) (*network, error)
-	Conn(ctx context.Context, ssid, password string) error
 }
 
+// ---------------------------------------------
+
+// AccessPoint ...
 type AccessPoint interface {
-	GetSsid() string
-	GetQuality() uint8
-	GetFreq() uint32
-	GetMaxBitrate() uint32
+	GetAccessType() string
+	GetMaxBitrate() string
 	GetMacAddr() string
-	GetSecType() string
+	GetChannel() string
+	GetQuality() string
+	GetFreq() string
+	GetSsid() string
 }
+
+// ---------------------------------------------
 
 func Items() ([]AccessPoint, error) {
 	n, err := NewDbusNm()

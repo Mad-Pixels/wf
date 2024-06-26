@@ -12,12 +12,13 @@ import (
 
 // external network object data implementation.
 type network interface {
-	GetSsid() string
-	GetQuality() uint8
-	GetFreq() uint32
-	GetMaxBitrate() uint32
+	GetAccessType() string
+	GetMaxBitrate() string
 	GetMacAddr() string
-	GetSecType() string
+	GetChannel() string
+	GetQuality() string
+	GetFreq() string
+	GetSsid() string
 	// GetBssid() string
 	// GetSsid() string
 	// GetMode() string
@@ -52,14 +53,17 @@ func (n *netScan) renderComponent() {
 	n.table.AddCellHeader(0, 3, "maxbitrate")
 	n.table.AddCellHeader(0, 4, "mac")
 	n.table.AddCellHeader(0, 5, "sectype")
+	n.table.AddCellHeader(0, 6, "channel")
 
 	for row, network := range n.networks {
 		n.table.AddCellContent(row+1, 0, network.GetSsid())
-		n.table.AddCellContent(row+1, 1, fmt.Sprintf("%d", network.GetQuality()))
-		n.table.AddCellContent(row+1, 2, fmt.Sprintf("%d", network.GetFreq()))
-		n.table.AddCellContent(row+1, 3, fmt.Sprintf("%d", network.GetMaxBitrate()))
+		n.table.AddCellContent(row+1, 1, network.GetQuality())
+		n.table.AddCellContent(row+1, 2, network.GetFreq())
+		n.table.AddCellContent(row+1, 3, network.GetMaxBitrate())
 		n.table.AddCellContent(row+1, 4, network.GetMacAddr())
-		n.table.AddCellContent(row+1, 5, network.GetSecType())
+		n.table.AddCellContent(row+1, 5, network.GetAccessType())
+		n.table.AddCellContent(row+1, 6, network.GetChannel())
+
 	}
 	n.table.WithCount(len(n.networks))
 }
