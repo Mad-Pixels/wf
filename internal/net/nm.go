@@ -136,6 +136,15 @@ func NewDbusNm() (*dbusNm, error) {
 
 // WirelessAccessPoints return available access points data as []AccessPoint object.
 func (nm dbusNm) WirelessAccessPoints() ([]AccessPoint, error) {
+	// -----------------
+	for _, device := range nm.devicesWireless {
+		if err := device.Call("org.freedesktop.NetworkManager.Device.Wireless.RequestScan", 0, map[string]dbus.Variant{}).Err; err != nil {
+			return nil, err
+		}
+	}
+
+	// -----------------
+
 	apList := []AccessPoint{}
 
 	for _, device := range nm.devicesWireless {
