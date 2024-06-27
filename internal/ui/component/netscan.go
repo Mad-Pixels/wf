@@ -61,7 +61,7 @@ func (n *netScan) reload(ctx context.Context) {
 	n.networks = []network{}
 	n.WriteMsg("reload")
 
-	result, err := net.Items()
+	result, err := net.Driver.WirelessAccessPoints()
 	if err != nil {
 		n.WriteMsg(err.Error())
 	}
@@ -99,10 +99,10 @@ func NetScan[R RenderInterface, L LoggerInterface, V ViewInterface](render R, lo
 						return self.networks[selectedRow-1].GetSsid()
 					}(),
 					func(ssid string) {
-						err := net.NewNetwork().Conn(context.Background(), ssid, "qwerty")
-						if err != nil {
-							self.WriteMsg(err.Error())
-						}
+						// err := net.NewNetwork().Conn(context.Background(), ssid, "qwerty")
+						// if err != nil {
+						// 	self.WriteMsg(err.Error())
+						// }
 						self.WriteMsg(fmt.Sprintf("exec proc for %s", ssid))
 					},
 				),

@@ -6,6 +6,7 @@ import (
 	"runtime"
 
 	"github.com/Mad-Pixels/wf"
+	"github.com/Mad-Pixels/wf/internal/net"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
 	"github.com/rivo/tview"
 )
@@ -20,7 +21,7 @@ type sysInfo struct {
 }
 
 func (s *sysInfo) delay() uint8 {
-	return 254
+	return 12
 }
 
 func (s *sysInfo) renderComponent() {
@@ -51,6 +52,9 @@ func (s *sysInfo) reload(ctx context.Context) {
 	}
 	s.usr = info.Username
 	s.uid = info.Uid
+
+	// Call ReScan manually, work only with priviliges access rights.
+	_ = net.Driver.WirelessScan()
 }
 
 func (s *sysInfo) FlexItem(ctx context.Context) *tview.Flex {

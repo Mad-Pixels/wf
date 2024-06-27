@@ -93,8 +93,8 @@ type dbusNm struct {
 	devicesWireless []dbus.BusObject
 }
 
-// NewDbusNm return dbusNm object.
-func NewDbusNm() (*dbusNm, error) {
+// New Driver return dbusNm as driver object.
+func NewDriver() (driverInterface, error) {
 	conn, err := dbus.SystemBus()
 	if err != nil {
 		return nil, err
@@ -135,8 +135,8 @@ func NewDbusNm() (*dbusNm, error) {
 	}, nil
 }
 
-// Scan send request for Re-Scan wireless networks. (work only from superuser).
-func (nm dbusNm) WirelessScan() error {
+// send request for Re-Scan wireless networks. (work only from superuser).
+func (nm dbusNm) wirelessScan() error {
 	for _, device := range nm.devicesWireless {
 		if err := device.
 			Call(nmDestWirelessReScan, 0, map[string]dbus.Variant{}).
@@ -147,8 +147,12 @@ func (nm dbusNm) WirelessScan() error {
 	return nil
 }
 
-// WirelessAccessPoints return available access points data as []AccessPoint object.
-func (nm dbusNm) WirelessAccessPoints() ([]AccessPoint, error) {
+func (nm dbusNm) currentConnetcion() (AccessPoint, error) {
+	return accessPoint{}, nil
+}
+
+// return available access points data as []AccessPoint object.
+func (nm dbusNm) wirelessAccessPoints() ([]AccessPoint, error) {
 	apList := []AccessPoint{}
 
 	for _, device := range nm.devicesWireless {
@@ -162,7 +166,7 @@ func (nm dbusNm) WirelessAccessPoints() ([]AccessPoint, error) {
 		for _, apPath := range apPaths {
 			apObject, err := dbusObjAp{
 				object: nm.conn.Object(nmDest, apPath),
-			}.AccessPoint()
+			}.accessPoint()
 			if err != nil {
 				return nil, err
 			}
@@ -179,7 +183,7 @@ type dbusObjAp struct {
 }
 
 // AccessPoint return access point data as AccessPoint object.
-func (ap dbusObjAp) AccessPoint() (AccessPoint, error) {
+func (ap dbusObjAp) accessPoint() (AccessPoint, error) {
 	type res struct {
 		field string
 		err   error

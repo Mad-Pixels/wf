@@ -27,16 +27,16 @@ func (n *netStat) renderComponent() {
 
 func (n *netStat) reload(ctx context.Context) {
 	defer n.renderComponent()
-
 	var status = "n/a"
-	info, err := net.NewNetwork().Stat(ctx)
+
+	ap, err := net.Driver.CurrentConnetcion()
 	switch {
 	case err != nil:
 		n.WriteMsg(err.Error())
-	case info == nil:
+	case ap == nil:
 		status = "no active connection"
 	default:
-		status = fmt.Sprintf("connected: %s", info.GetSsid())
+		status = fmt.Sprintf("connected: %s", ap.GetSsid())
 	}
 	n.status = status
 }
