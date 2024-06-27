@@ -59,7 +59,6 @@ func (n *netScan) renderComponent() {
 func (n *netScan) reload(ctx context.Context) {
 	defer n.renderComponent()
 	n.networks = []network{}
-	n.WriteMsg("reload")
 
 	result, err := net.Driver.WirelessAccessPoints()
 	if err != nil {
