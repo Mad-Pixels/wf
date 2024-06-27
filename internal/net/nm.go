@@ -17,6 +17,7 @@ var (
 
 	nmDestDevice               = nmDest + ".Device"
 	nmDestDevices              = nmDest + ".GetDevices"
+	nmDestWirelessReScan       = nmDest + ".Device.Wireless.RequestScan"
 	nmDestWirelessAccessPoint  = nmDest + ".AccessPoint"
 	nmDestWirelessAccessPoints = nmDest + ".Device.Wireless.GetAllAccessPoints"
 )
@@ -134,17 +135,20 @@ func NewDbusNm() (*dbusNm, error) {
 	}, nil
 }
 
-// WirelessAccessPoints return available access points data as []AccessPoint object.
-func (nm dbusNm) WirelessAccessPoints() ([]AccessPoint, error) {
-	// -----------------
+// Scan send request for Re-Scan wireless networks. (work only from superuser).
+func (nm dbusNm) WirelessScan() error {
 	for _, device := range nm.devicesWireless {
-		if err := device.Call("org.freedesktop.NetworkManager.Device.Wireless.RequestScan", 0, map[string]dbus.Variant{}).Err; err != nil {
-			return nil, err
+		if err := device.
+			Call(nmDestWirelessReScan, 0, map[string]dbus.Variant{}).
+			Err; err != nil {
+			return err
 		}
 	}
+	return nil
+}
 
-	// -----------------
-
+// WirelessAccessPoints return available access points data as []AccessPoint object.
+func (nm dbusNm) WirelessAccessPoints() ([]AccessPoint, error) {
 	apList := []AccessPoint{}
 
 	for _, device := range nm.devicesWireless {
