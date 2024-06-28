@@ -72,7 +72,7 @@ func (ap accessPoint) GetFreq() string {
 
 // GetMaxBitrate return access point bitrate in Mbps.
 func (ap accessPoint) GetMaxBitrate() string {
-	return fmt.Sprintf("%.2f Mbps", float64(ap.maxBitrate)/1000)
+	return fmt.Sprintf("%d Mbps", ap.maxBitrate/1000)
 }
 
 // GetMacAddr return access point mac address.

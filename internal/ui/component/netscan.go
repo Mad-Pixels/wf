@@ -100,8 +100,8 @@ func NetScan[R RenderInterface, L LoggerInterface, V ViewInterface](render R, lo
 						selectedRow, _ := self.table.Object.GetSelection()
 						return self.networks[selectedRow-1].GetSsid()
 					}(),
-					func(ssid string) {
-						err := net.Driver.WirelessConnect(ssid, "Tislam55")
+					func(ssid, password string) {
+						err := net.Driver.WirelessConnect(ssid, password)
 						if err != nil {
 							self.WriteMsg(err.Error())
 							return
