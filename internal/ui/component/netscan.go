@@ -19,6 +19,7 @@ type network interface {
 	GetQuality() string
 	GetFreq() string
 	GetSsid() string
+	GetMode() string
 }
 
 type netScan struct {
@@ -42,6 +43,7 @@ func (n *netScan) renderComponent() {
 	n.table.AddCellHeader(0, 4, "mac")
 	n.table.AddCellHeader(0, 5, "sectype")
 	n.table.AddCellHeader(0, 6, "channel")
+	n.table.AddCellHeader(0, 7, "mode")
 
 	for row, network := range n.networks {
 		n.table.AddCellContent(row+1, 0, network.GetSsid())
@@ -51,6 +53,7 @@ func (n *netScan) renderComponent() {
 		n.table.AddCellContent(row+1, 4, network.GetMacAddr())
 		n.table.AddCellContent(row+1, 5, network.GetAccessType())
 		n.table.AddCellContent(row+1, 6, network.GetChannel())
+		n.table.AddCellContent(row+1, 7, network.GetMode())
 
 	}
 	n.table.WithCount(len(n.networks))
@@ -98,11 +101,12 @@ func NetScan[R RenderInterface, L LoggerInterface, V ViewInterface](render R, lo
 						return self.networks[selectedRow-1].GetSsid()
 					}(),
 					func(ssid string) {
-						// err := net.NewNetwork().Conn(context.Background(), ssid, "qwerty")
-						// if err != nil {
-						// 	self.WriteMsg(err.Error())
-						// }
-						self.WriteMsg(fmt.Sprintf("exec proc for %s", ssid))
+						err := net.Driver.WirelessConnect(ssid, "Tislam55")
+						if err != nil {
+							self.WriteMsg(err.Error())
+							return
+						}
+						self.WriteMsg(fmt.Sprintf("connected to: %s", ssid))
 					},
 				),
 			)

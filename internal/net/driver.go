@@ -24,11 +24,13 @@ type AccessPoint interface {
 	GetQuality() string
 	GetFreq() string
 	GetSsid() string
+	GetMode() string
 }
 
 // represent Driver object.
 type driverInterface interface {
 	wirelessAccessPoints() ([]AccessPoint, error)
+	wirelessConnect(ssid, password string) error
 	currentConnetcion() (AccessPoint, error)
 	wirelessScan() error
 }
@@ -50,4 +52,9 @@ func (d driver) WirelessScan() error {
 // CurrentConnection return current access point.
 func (d driver) CurrentConnetcion() (AccessPoint, error) {
 	return d.currentConnetcion()
+}
+
+// WirelessConnect connect to access point.
+func (d driver) WirelessConnect(ssid, password string) error {
+	return d.wirelessConnect(ssid, password)
 }

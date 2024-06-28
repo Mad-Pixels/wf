@@ -1,8 +1,11 @@
 package net
 
 import (
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/godbus/dbus/v5"
 )
@@ -18,6 +21,8 @@ var (
 	nmDestDevice               = nmDest + ".Device"
 	nmDestDevices              = nmDest + ".GetDevices"
 	nmDestWirelessReScan       = nmDest + ".Device.Wireless.RequestScan"
+	nmDestActiveConnection     = nmDest + ".ActivateConnection"
+	nmDestWirelessConnection   = nmDest + ".Settings.AddConnection"
 	nmDestWirelessAccessPoint  = nmDest + ".AccessPoint"
 	nmDestWirelessAccessPoints = nmDest + ".Device.Wireless.GetAllAccessPoints"
 )
@@ -33,6 +38,9 @@ type accessPoint struct {
 	hwAddress  string
 	ssid       string
 	mode       string
+
+	path   dbus.ObjectPath
+	device dbus.ObjectPath
 }
 
 // GetSsid return access point name.
@@ -72,6 +80,10 @@ func (ap accessPoint) GetMacAddr() string {
 	return ap.hwAddress
 }
 
+func (ap accessPoint) GetMode() string {
+	return ap.mode
+}
+
 // GetAccessType return access point acces type.
 func (ap accessPoint) GetAccessType() string {
 	if ap.rsnFlags != 0 {
@@ -84,6 +96,14 @@ func (ap accessPoint) GetAccessType() string {
 		return "WEP"
 	}
 	return "OPEN"
+}
+
+// return hw address as hex bytes.
+func (ap accessPoint) hwAddressHex() []byte {
+	hw, _ := hex.DecodeString(
+		strings.ReplaceAll(ap.hwAddress, ":", ""),
+	)
+	return hw
 }
 
 // dbus NetworkManager object.
@@ -135,7 +155,7 @@ func NewDriver() (driverInterface, error) {
 	}, nil
 }
 
-// send request for Re-Scan wireless networks. (work only from superuser).
+// driverInterface method which send request for Re-Scan wireless networks. (work only from superuser).
 func (nm dbusNm) wirelessScan() error {
 	for _, device := range nm.devicesWireless {
 		if err := device.
@@ -144,14 +164,83 @@ func (nm dbusNm) wirelessScan() error {
 			return err
 		}
 	}
+
 	return nil
 }
 
+// driverInterface method which return current wireless access point.
 func (nm dbusNm) currentConnetcion() (AccessPoint, error) {
 	return accessPoint{}, nil
 }
 
-// return available access points data as []AccessPoint object.
+// direverInterface method which ....
+func (nm dbusNm) wirelessConnect(ssid, password string) error {
+	ap, err := nm.getWirelessAccessPoint(ssid)
+	if err != nil {
+		return err
+	}
+
+	connCfg := map[string]map[string]dbus.Variant{
+		"802-11-wireless": {
+			"ssid":  dbus.MakeVariant([]byte(ap.ssid)),
+			"bssid": dbus.MakeVariant(ap.hwAddressHex()),
+		},
+		"802-11-wireless-security": {
+			"psk": dbus.MakeVariant(password),
+		},
+		"connection": {
+			"type":        dbus.MakeVariant("802-11-wireless"),
+			"id":          dbus.MakeVariant(ap.ssid),
+			"autoconnect": dbus.MakeVariant(true),
+		},
+		"ipv4": {
+			"method": dbus.MakeVariant("auto"),
+		},
+		"ipv6": {
+			"method": dbus.MakeVariant("ignore"),
+		},
+	}
+	switch ap.GetAccessType() {
+	case "WPA2":
+		connCfg["802-11-wireless-security"]["key-mgmt"] = dbus.MakeVariant("wpa-psk")
+		connCfg["802-11-wireless-security"]["proto"] = dbus.MakeVariant([]string{"rsn"})
+	case "WPA":
+		connCfg["802-11-wireless-security"]["key-mgmt"] = dbus.MakeVariant("wpa-psk")
+		connCfg["802-11-wireless-security"]["proto"] = dbus.MakeVariant([]string{"wpa"})
+	case "WEP":
+		connCfg["802-11-wireless-security"]["key-mgmt"] = dbus.MakeVariant("none")
+		connCfg["802-11-wireless-security"]["wep-key0"] = dbus.MakeVariant(password)
+		connCfg["802-11-wireless-security"]["wep-tx-keyidx"] = dbus.MakeVariant(0)
+	case "OPEN":
+		delete(connCfg, "802-11-wireless-security")
+	}
+
+	var (
+		settings = nm.conn.Object(nmDest, "/org/freedesktop/NetworkManager/Settings")
+		call     = settings.Call(nmDestWirelessConnection, 0, connCfg)
+		path     dbus.ObjectPath
+	)
+	if call.Err != nil {
+		return call.Err
+	}
+	if err := call.Store(&path); err != nil {
+		return err
+	}
+	return nm.conn.
+		Object(
+			nmDest,
+			"/org/freedesktop/NetworkManager",
+		).
+		Call(
+			nmDestActiveConnection,
+			0,
+			path,
+			ap.device,
+			dbus.ObjectPath("/"),
+		).Err
+}
+
+// driverInterface method which return available access points data as []AccessPoint object.
 func (nm dbusNm) wirelessAccessPoints() ([]AccessPoint, error) {
 	apList := []AccessPoint{}
 
@@ -170,11 +259,41 @@ func (nm dbusNm) wirelessAccessPoints() ([]AccessPoint, error) {
 			if err != nil {
 				return nil, err
 			}
+
+			apObject.device = device.Path()
 			apList = append(apList, apObject)
 		}
 	}
 
 	return apList, nil
+}
+
+// return available access point from list by ssid or error.
+func (nm dbusNm) getWirelessAccessPoint(ssid string) (*accessPoint, error) {
+	for _, device := range nm.devicesWireless {
+		var apPaths []dbus.ObjectPath
+
+		if err := device.
+			Call(nmDestWirelessAccessPoints, 0).
+			Store(&apPaths); err != nil {
+			return nil, err
+		}
+		for _, apPath := range apPaths {
+			apObject, err := dbusObjAp{
+				object: nm.conn.Object(nmDest, apPath),
+			}.accessPoint()
+			apObject.device = device.Path()
+
+			if err != nil {
+				continue
+			}
+			if apObject.ssid == ssid {
+				return apObject, nil
+			}
+		}
+	}
+
+	return nil, errors.New("access point not found")
 }
 
 // dbus AccessPoint object.
@@ -183,7 +302,7 @@ type dbusObjAp struct {
 }
 
 // AccessPoint return access point data as AccessPoint object.
-func (ap dbusObjAp) accessPoint() (AccessPoint, error) {
+func (ap dbusObjAp) accessPoint() (*accessPoint, error) {
 	type res struct {
 		field string
 		err   error
@@ -214,7 +333,9 @@ func (ap dbusObjAp) accessPoint() (AccessPoint, error) {
 	go ex("ssid", func() (any, error) { return ap.ssid() })
 	go ex("mode", func() (any, error) { return ap.mode() })
 
-	accPoint := &accessPoint{}
+	accPoint := &accessPoint{
+		path: ap.object.Path(),
+	}
 	for i := 0; i < fieldCount; i++ {
 		res := <-ch
 		if res.err != nil {
