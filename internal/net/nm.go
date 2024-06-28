@@ -35,9 +35,9 @@ type accessPoint struct {
 	flags      uint32
 	wpaFlags   uint32
 	rsnFlags   uint32
+	mode       uint32
 	hwAddress  string
 	ssid       string
-	mode       string
 
 	path   dbus.ObjectPath
 	device dbus.ObjectPath
@@ -81,7 +81,16 @@ func (ap accessPoint) GetMacAddr() string {
 }
 
 func (ap accessPoint) GetMode() string {
-	return ap.mode
+	switch ap.mode {
+	case 1:
+		return "Ad-hoc"
+	case 2:
+		return "Infra"
+	case 3:
+		return "AP"
+	default:
+		return "NaN"
+	}
 }
 
 // GetAccessType return access point acces type.
@@ -360,7 +369,7 @@ func (ap dbusObjAp) accessPoint() (*accessPoint, error) {
 		case "ssid":
 			accPoint.ssid = res.value.(string)
 		case "mode":
-			accPoint.mode = res.value.(string)
+			accPoint.mode = res.value.(uint32)
 		}
 	}
 
@@ -416,13 +425,13 @@ func (ap dbusObjAp) hwAddress() (string, error) {
 }
 
 // run dbus call and return "Mode" [Ad-hoc, Access Point, Station, ...] for current AccessPoint path.
-func (ap dbusObjAp) mode() (string, error) {
-	var val string
+func (ap dbusObjAp) mode() (uint32, error) {
+	var val uint32
 
 	if err := ap.object.
 		Call(nmPropGet, 0, nmDestWirelessAccessPoint, "Mode").
 		Store(&val); err != nil {
-		return "", err
+		return 0, err
 	}
 	return val, nil
 }
