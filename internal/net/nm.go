@@ -22,6 +22,7 @@ var (
 	nmDestDevices              = nmDest + ".GetDevices"
 	nmDestWirelessReScan       = nmDest + ".Device.Wireless.RequestScan"
 	nmDestActiveConnection     = nmDest + ".ActivateConnection"
+	nmDestConnectionActive     = nmDest + ".Connection.Active"
 	nmDestWirelessConnection   = nmDest + ".Settings.AddConnection"
 	nmDestWirelessAccessPoint  = nmDest + ".AccessPoint"
 	nmDestWirelessAccessPoints = nmDest + ".Device.Wireless.GetAllAccessPoints"
@@ -179,10 +180,45 @@ func (nm dbusNm) wirelessScan() error {
 
 // driverInterface method which return current wireless access point.
 func (nm dbusNm) currentConnetcion() (AccessPoint, error) {
-	return accessPoint{}, nil
+	for _, device := range nm.devicesWireless {
+		var (
+			connPath dbus.ObjectPath
+			apPath   dbus.ObjectPath
+			ap       dbusObjAp
+		)
+
+		if err := device.
+			Call(nmPropGet, 0, nmDestDevice, "ActiveConnection").
+			Store(&apPath); err != nil {
+			continue
+		}
+		if apPath == "" {
+			continue
+		}
+
+		connObj := nm.conn.Object(nmDest, apPath)
+		if err := connObj.
+			Call(nmPropGet, 0, nmDestConnectionActive, "SpecificObject").
+			Store(&connPath); err != nil {
+			return nil, err
+		}
+		if connPath == "" {
+			continue
+		}
+		apObj := nm.conn.Object(nmDest, connPath)
+		ap.object = apObj
+
+		apData, err := ap.accessPoint()
+		if err != nil {
+			return nil, err
+		}
+		return apData, nil
+	}
+
+	return nil, nil
 }
 
-// direverInterface method which ....
+// direverInterface method which init connection to wireless network.
 func (nm dbusNm) wirelessConnect(ssid, password string) error {
 	ap, err := nm.getWirelessAccessPoint(ssid)
 	if err != nil {
