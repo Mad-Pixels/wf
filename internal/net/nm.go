@@ -3,7 +3,6 @@ package net
 import (
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -73,7 +72,7 @@ func (ap accessPoint) GetFreq() string {
 
 // GetMaxBitrate return access point bitrate in Mbps.
 func (ap accessPoint) GetMaxBitrate() string {
-	return fmt.Sprintf("%d Mbps", ap.maxBitrate/1000)
+	return strconv.Itoa(int(ap.maxBitrate/1000)) + " Mbps"
 }
 
 // GetMacAddr return access point mac address.
@@ -81,6 +80,7 @@ func (ap accessPoint) GetMacAddr() string {
 	return ap.hwAddress
 }
 
+// GetMode return access point mode type.
 func (ap accessPoint) GetMode() string {
 	switch ap.mode {
 	case 1:
@@ -123,7 +123,7 @@ type dbusNm struct {
 	devicesWireless []dbus.BusObject
 }
 
-// New Driver return dbusNm as driver object.
+// NewDriver return dbusNm as driver object.
 func NewDriver() (driverInterface, error) {
 	conn, err := dbus.SystemBus()
 	if err != nil {
