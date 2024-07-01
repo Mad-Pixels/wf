@@ -3,6 +3,7 @@ package component
 import (
 	"context"
 	"fmt"
+	"reflect"
 
 	"github.com/Mad-Pixels/wf/internal/net"
 	"github.com/Mad-Pixels/wf/internal/ui/style"
@@ -33,7 +34,7 @@ func (n *netStat) reload(ctx context.Context) {
 	switch {
 	case err != nil:
 		n.WriteMsg(err.Error())
-	case ap == nil:
+	case reflect.ValueOf(ap).IsNil():
 		status = "no active connection"
 	default:
 		status = fmt.Sprintf("connected: %s", ap.GetSsid())
