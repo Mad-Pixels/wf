@@ -101,6 +101,7 @@ func (md *mockDriver) currentConnetcion() (AccessPoint, error) {
 // direverInterface method which init connection to wireless network.
 func (md *mockDriver) wirelessConnect(ssid, password string) error {
 	md.currentAp = randomNetwork().(*accessPoint)
+	md.currentAp.ssid = ssid
 	return nil
 }
 
